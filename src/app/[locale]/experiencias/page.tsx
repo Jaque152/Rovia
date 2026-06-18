@@ -42,7 +42,7 @@ function ExperienciasContent() {
         if (error) throw error;
 
         if (actData) {
-          const mappedData: ExperienceWithPrice[] = (actData as SupabaseExperienceResponse[]).map((item) => ({
+          const mappedData: ExperienceWithPrice[] = (actData as unknown as SupabaseExperienceResponse[]).map((item) => ({
             id: item.id,
             title: item.title,
             slug: item.slug,
@@ -50,10 +50,12 @@ function ExperienciasContent() {
             location: item.location,
             images: item.images || [], 
             category_id: item.category_id,
-            categories: item.categories || undefined,
-            important_info: item.important_info || undefined,
+            // Reconstruimos el objeto para evitar incompatibilidades estrictas
+            categories: item.categories ? { id: item.categories.id, name: item.categories.name, slug: item.categories.slug } : undefined,
+            important_info: item.important_info ? item.important_info : undefined,
             displayPrice: item.activity_packages?.[0]?.price || 0
-          }));
+          } as ExperienceWithPrice)); 
+          
           setExperiences(mappedData);
         }
       } catch (error) {
