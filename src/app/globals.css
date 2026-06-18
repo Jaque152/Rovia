@@ -1,5 +1,5 @@
 /* globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300..900;1,300..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Outfit:wght@100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,54 +7,56 @@
 
 @layer base {
   :root {
-    /* Explonix Palette: Digital Ocean (Icy White, Slate, Electric Indigo) */
-    --background: 210 40% 98%; /* Icy White / Gris muy claro azulado */
-    --foreground: 222 47% 11%; /* Deep Slate / Azul marino casi negro */
-    --card: 0 0% 100%; /* Blanco puro */
-    --card-foreground: 222 47% 11%;
+    /* Tripnova Palette: Sunset Horizon (Off-White, Deep Onyx, Vibrant Coral) */
+    --background: 30 20% 98%; /* Warm Off-white */
+    --foreground: 0 0% 10%; /* Deep Onyx */
+    --card: 0 0% 100%; /* Puro blanco para resaltar sobre el fondo cálido */
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 10%;
     
-    /* Electric Indigo (#6366F1) - Color de acción principal */
-    --primary: 239 84% 67%; 
+    /* Vibrant Coral (#FF6B6B) - Acción principal, llama al viaje */
+    --primary: 354 100% 71%; 
     --primary-foreground: 0 0% 100%;
     
-    /* Vivid Cyan (#06B6D4) - Para acentos secundarios */
-    --secondary: 189 94% 43%; 
-    --secondary-foreground: 222 47% 11%;
+    /* Golden Sand (#FCA311) - Acentos secundarios y calidez */
+    --secondary: 37 98% 53%; 
+    --secondary-foreground: 0 0% 10%;
     
-    --muted: 214 32% 91%;
-    --muted-foreground: 215 16% 47%; /* Gris azulado para textos secundarios */
+    --muted: 30 10% 90%;
+    --muted-foreground: 25 5% 45%; 
     
-    --accent: 189 94% 43%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 37 98% 53%;
+    --accent-foreground: 0 0% 10%;
     
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
     
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 239 84% 67%;
+    --border: 30 10% 85%;
+    --input: 30 10% 85%;
+    --ring: 354 100% 71%;
 
-    --radius: 1rem; 
+    /* Bordes ligeramente más definidos para un look más premium */
+    --radius: 0.75rem; 
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 15%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 15%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 239 84% 75%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 189 94% 50%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 222 47% 20%;
-    --muted-foreground: 215 20% 65%;
-    --border: 222 47% 20%;
-    --input: 222 47% 20%;
-    --ring: 239 84% 75%;
+    /* Dark mode con tonos profundos de medianoche en lugar de grises neutros */
+    --background: 240 10% 10%;
+    --foreground: 30 20% 98%;
+    --card: 240 10% 12%;
+    --card-foreground: 30 20% 98%;
+    --popover: 240 10% 12%;
+    --popover-foreground: 30 20% 98%;
+    --primary: 354 100% 75%;
+    --primary-foreground: 240 10% 10%;
+    --secondary: 37 98% 60%;
+    --secondary-foreground: 240 10% 10%;
+    --muted: 240 10% 18%;
+    --muted-foreground: 240 5% 65%;
+    --border: 240 10% 18%;
+    --input: 240 10% 18%;
+    --ring: 354 100% 75%;
   }
 }
 
@@ -64,23 +66,24 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Archivo', sans-serif;
+    font-family: 'DM Sans', sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Outfit', sans-serif;
     @apply tracking-tight;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_4px_24px_rgb(0,0,0,0.02)];
+    @apply bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)];
   }
   .dark .glass-panel {
-    @apply bg-slate-900/50 border-slate-700/50 shadow-[0_4px_24px_rgb(0,0,0,0.2)];
+    @apply bg-zinc-900/60 border-zinc-800/50 shadow-[0_8px_30px_rgb(0,0,0,0.3)];
   }
   
   .text-gradient-cool {
+    /* Ajustado para los nuevos colores vibrantes */
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
   }
 
@@ -90,12 +93,12 @@
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
+/* Scrollbar rediseñado para que coincida con la nueva marca */
+::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 12px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }

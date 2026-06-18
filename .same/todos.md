@@ -1,4 +1,4 @@
-# Explonix - Plataforma Transaccional
+# Tripnova - Plataforma Transaccional
 
 
 ## Rutas del Proyecto

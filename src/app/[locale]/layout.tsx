@@ -9,8 +9,8 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "Explonix | Redefiniendo la Exploración y el Viaje",
-  description: "Curamos itinerarios a la medida y experiencias de alto nivel. Descubre los destinos más asombrosos con el respaldo y la exclusividad de Explonix.",
+  title: "Tripnova | Tu Próxima Gran Aventura",
+  description: "Curamos itinerarios a la medida y experiencias inolvidables. Descubre el mundo con el respaldo y la innovación de Tripnova.",
 };
 
 export default async function RootLayout({

@@ -2,124 +2,99 @@
 import { useLocale } from 'next-intl';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Mountain, Waves, Theater, Footprints } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Sparkles, Compass } from "lucide-react";
 import Link from "next/link";
 import { T } from "@/components/T";
-
-const experiences = [
-  {
-    id: 1,
-    number: "01",
-    title: "Ecosistemas Ocultos",
-    description: "Desconéctate del radar y adéntrate en reservas naturales milenarias con guías expertos en conservación.",
-    icon: Mountain,
-    color: "text-emerald-500",
-    bgAccent: "group-hover:bg-emerald-500/5",
-    tag: "Naturaleza",
-    slug: "naturaleza"
-  },
-  {
-    id: 2,
-    number: "02",
-    title: "Dinámica Costera",
-    description: "Domina las corrientes del Pacífico. Logística completa para surf, buceo y expediciones oceánicas de alto impacto.",
-    icon: Waves,
-    color: "text-cyan-500",
-    bgAccent: "group-hover:bg-cyan-500/5",
-    tag: "Aventura",
-    slug: "aventura"
-  },
-  {
-    id: 3,
-    number: "03",
-    title: "Inmersión Local",
-    description: "Conecta directamente con las raíces culturales de México. Acceso exclusivo a comunidades, ritos y patrimonio.",
-    icon: Theater,
-    color: "text-indigo-500",
-    bgAccent: "group-hover:bg-indigo-500/5",
-    tag: "Cultura",
-    slug: "cultura"
-  },
-  {
-    id: 4,
-    number: "04",
-    title: "Circuito Culinario",
-    description: "Mapeamos los sabores más auténticos del país. Desde alta cocina hasta los secretos mejor guardados.",
-    icon: Footprints,
-    color: "text-rose-500",
-    bgAccent: "group-hover:bg-rose-500/5",
-    tag: "Gastronomía",
-    slug: "gastronomia"
-  }
-];
 
 export function Experiences() {
   const locale = useLocale();
   return (
-    <section id="experiencias" className="py-24 lg:py-32 relative bg-background">
+    <section id="experiencias" className="py-24 lg:py-32 relative bg-background border-t border-border/50">
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         
         {/* Cabecera */}
-        <div className="max-w-4xl mb-20 flex flex-col items-start">
-          <Badge variant="outline" className="mb-6 rounded-full px-5 py-2 border-primary/30 text-primary font-bold tracking-widest uppercase text-xs">
-            <T>Catálogo Explonix</T>
-          </Badge>
-          <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter leading-[0.9]">
-            <T>Diseña tu</T><br/>
-            <span className="text-gradient-cool">
-              <T>propia ruta</T>
-            </span>
-          </h2>
-          <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl font-medium">
-            <T>Olvídate de los tours tradicionales. Con Explonix, te conectamos con experiencias dinámicas, seguras y fuera de lo común.</T>
-          </p>
+        <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-20">
+          <div className="max-w-2xl">
+            <Badge variant="outline" className="mb-6 rounded-full px-5 py-2 border-primary/30 text-primary font-bold tracking-widest uppercase text-xs bg-primary/5">
+              <T>Gestión de Viajes</T>
+            </Badge>
+            <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-[1] text-foreground">
+              <T>Recorre México con rutas</T> <br className="hidden md:block"/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                <T>exclusivas e imborrables.</T>
+              </span>
+            </h2>
+          </div>
+          <Button asChild variant="outline" className="rounded-full h-12 px-6 font-bold border-2 border-border hover:bg-foreground hover:text-background transition-colors text-foreground">
+            <Link href={`/${locale}/experiencias`}><T>Ver todos los planes</T></Link>
+          </Button>
         </div>
 
-        {/* Tarjetas Editoriales */}
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-10">
-          {experiences.map((exp) => (
-            <Link
-              key={exp.id}
-              href={`/${locale}/experiencias?categoria=${exp.slug}`}
-              className="block group"
-            >
-              <Card className={`h-full relative overflow-hidden bg-card border-none rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 ${exp.bgAccent}`}>
-                
-                {/* Ícono gigante como marca de agua en el fondo */}
-                <exp.icon className={`absolute -bottom-10 -right-10 w-64 h-64 opacity-[0.03] group-hover:opacity-10 group-hover:scale-110 group-hover:-rotate-12 transition-all duration-700 ${exp.color} pointer-events-none`} />
+        {/* Layout de Categorías Nuevas */}
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+          
+          {/* Tarjeta Destacada: Itinerarios de Viaje */}
+          <Card className="lg:col-span-2 relative overflow-hidden bg-foreground text-background border-none rounded-[2rem] shadow-xl group">
+             {/* Imagen épica de carretera o mapa */}
+             <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/346885/pexels-photo-346885.jpeg')] bg-cover bg-center opacity-40 group-hover:opacity-50 transition-opacity duration-500 mix-blend-overlay" />
+             
+             <CardContent className="p-10 md:p-14 h-full flex flex-col justify-end relative z-10 min-h-[400px]">
+                <Badge className="w-fit mb-6 bg-primary text-white hover:bg-primary border-none font-bold uppercase tracking-widest text-[10px]">
+                  <T>Destacado</T>
+                </Badge>
+                <h3 className="text-4xl md:text-5xl font-black mb-4 tracking-tight text-white">
+                  <T>Itinerarios a la medida</T>
+                </h3>
+                <p className="text-lg text-white/80 max-w-lg mb-8 font-medium leading-relaxed">
+                  <T>Escapadas exprés, rutas para mochileros y road trips familiares diseñados paso a paso para que tú solo disfrutes el camino.</T>
+                </p>
+                <Button asChild className="w-fit rounded-full bg-secondary text-foreground hover:bg-white font-bold h-14 px-8 shadow-lg shadow-secondary/20">
+                  <Link href={`/${locale}/experiencias?categoria=itinerarios-viaje`}>
+                    <T>Explorar itinerarios</T> <ArrowRight className="w-5 h-5 ml-2" />
+                  </Link>
+                </Button>
+             </CardContent>
+          </Card>
 
-                <CardContent className="p-10 md:p-12 h-full flex flex-col relative z-10">
-                  <div className="flex items-start justify-between mb-12">
-                    {/* Número tipográfico */}
-                    <span className="text-6xl font-black text-foreground/10 group-hover:text-primary/20 transition-colors font-serif">
-                      {exp.number}
-                    </span>
-                    <Badge variant="secondary" className="px-4 py-1.5 rounded-full text-xs font-bold bg-foreground text-background">
-                      <T>{exp.tag}</T>
-                    </Badge>
+          {/* Tarjetas Secundarias */}
+          <div className="flex flex-col gap-6 lg:gap-8">
+            
+            {/* Experiencias de Bienestar */}
+            <Link href={`/${locale}/experiencias?categoria=experiencias-bienestar`} className="flex-1 group">
+              <Card className="h-full border border-border bg-card rounded-[2rem] hover:shadow-xl hover:border-secondary/40 transition-all duration-300 relative overflow-hidden">
+                <Sparkles className="absolute -bottom-6 -right-6 w-32 h-32 opacity-[0.03] text-secondary group-hover:scale-110 transition-transform" />
+                <CardContent className="p-8 flex flex-col h-full justify-between">
+                  <div>
+                    <h3 className="text-2xl font-black mb-3 text-foreground tracking-tight"><T>Bienestar & Spa</T></h3>
+                    <p className="text-muted-foreground text-sm font-medium leading-relaxed"><T>Retiros de yoga, meditación sonora y temazcales tradicionales para reconectar cuerpo y mente.</T></p>
                   </div>
-
-                  <div className="flex-1">
-                    <h3 className="text-3xl font-black mb-4 group-hover:text-primary transition-colors tracking-tight">
-                      <T>{exp.title}</T>
-                    </h3>
-                    <p className="text-muted-foreground text-base leading-relaxed mb-8 max-w-sm">
-                      <T>{exp.description}</T>
-                    </p>
-                  </div>
-
-                  <div className="flex items-center text-sm font-bold text-foreground mt-4">
-                    <span className="border-b-2 border-transparent group-hover:border-primary transition-all pb-1">
-                      <T>Explorar</T>
-                    </span>
-                    <ArrowRight className="w-5 h-5 ml-3 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-primary" />
+                  <div className="mt-8 flex items-center text-sm font-bold text-secondary">
+                    <T>Descubrir</T> <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
                   </div>
                 </CardContent>
               </Card>
             </Link>
-          ))}
-        </div>
 
+            {/* Tours Locales */}
+            <Link href={`/${locale}/experiencias?categoria=tours-locales`} className="flex-1 group">
+              <Card className="h-full border border-border bg-card rounded-[2rem] hover:shadow-xl hover:border-primary/40 transition-all duration-300 relative overflow-hidden">
+                <Compass className="absolute -bottom-6 -right-6 w-32 h-32 opacity-[0.03] text-primary group-hover:scale-110 transition-transform" />
+                <CardContent className="p-8 flex flex-col h-full justify-between">
+                  <div>
+                    <h3 className="text-2xl font-black mb-3 text-foreground tracking-tight"><T>Tours Locales</T></h3>
+                    <p className="text-muted-foreground text-sm font-medium leading-relaxed"><T>Recorridos guiados por expertos en pueblos mágicos, zonas arqueológicas y circuitos gastronómicos.</T></p>
+                  </div>
+                  <div className="mt-8 flex items-center text-sm font-bold text-primary">
+                    <T>Descubrir</T> <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+            
+          </div>
+
+        </div>
       </div>
     </section>
   );

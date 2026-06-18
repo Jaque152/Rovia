@@ -52,7 +52,9 @@ export default function PagoFolioPage() {
         description: `Pago de folio: ${folio}`,
         location: "Múltiples Destinos",
         images: ["https://images.pexels.com/photos/7709272/pexels-photo-7709272.jpeg"],
-        category_id: 0
+        category_id: 0,
+        important_info: { codigo: folio, requiere_destino: false },
+        created_at: new Date().toISOString(),
       },
       levelName: "Personalizado",
       date: fecha,
@@ -62,7 +64,7 @@ export default function PagoFolioPage() {
     };
 
     addToCart(customExperienceItem);
-    sessionStorage.setItem("explonix_temp_contact", JSON.stringify({ nombre, email, folio })); 
+    sessionStorage.setItem("tripnova_temp_contact", JSON.stringify({ nombre, email, folio })); 
     router.push(`/${locale}/checkout`);
   };
 
@@ -70,8 +72,9 @@ export default function PagoFolioPage() {
   minDate.setDate(minDate.getDate() + 1);
   const minDateStr = minDate.toISOString().split("T")[0];
 
-  const inputClass = "h-14 bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl px-5 font-bold text-slate-700 placeholder:text-slate-400 placeholder:font-medium w-full";
-  const labelClass = "text-xs font-black uppercase tracking-widest text-slate-400 mb-3 flex items-center gap-2 ml-1";
+  // Tripnova Style Inputs
+  const inputClass = "h-14 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary rounded-xl px-5 font-bold text-foreground placeholder:text-muted-foreground placeholder:font-medium w-full";
+  const labelClass = "text-xs font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2 ml-1";
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -79,59 +82,59 @@ export default function PagoFolioPage() {
       <main className="flex-1 pt-20">
         
         {/* Hero Section  */}
-        <section className="bg-slate-900 pt-24 pb-40 relative overflow-hidden rounded-b-[3rem] mx-2 lg:mx-4 mt-4">
+        <section className="bg-foreground pt-24 pb-40 relative overflow-hidden rounded-b-[3rem] mx-2 lg:mx-4 mt-4 shadow-2xl">
           <div className="absolute top-0 left-0 w-full h-full opacity-20">
             <img 
               src="https://images.pexels.com/photos/7709272/pexels-photo-7709272.jpeg" 
               className="w-full h-full object-cover" 
-              alt="Explonix Experiencia" 
+              alt="Tripnova Experiencia" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/80 to-transparent"></div>
           </div>
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 blur-[150px] rounded-full pointer-events-none" />
           
           <div className="container mx-auto px-4 lg:px-8 relative z-10 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-6 backdrop-blur-sm">
-              <FileText className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs font-bold uppercase tracking-widest text-white"><T>Servicios Privados</T></span>
+            <div className="inline-flex items-center gap-2 px-5 py-2 bg-background/10 border border-background/20 rounded-full mb-6 backdrop-blur-sm">
+              <FileText className="w-4 h-4 text-secondary" />
+              <span className="text-xs font-bold uppercase tracking-widest text-background"><T>Servicios Privados</T></span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white mb-6">
-              <T>Pago de</T> <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-primary"><T>Folio</T></span>
+            <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-background mb-6">
+              <T>Pago de</T> <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-primary"><T>Folio</T></span>
             </h1>
-            <p className="text-lg text-slate-400 font-medium max-w-2xl mx-auto">
-              <T>Procesamiento seguro para itinerarios a la medida y servicios exclusivos de Explonix. Ingresa los detalles de tu folio para proceder al checkout.</T>
+            <p className="text-lg text-background/60 font-medium max-w-2xl mx-auto">
+              <T>Procesamiento seguro para itinerarios a la medida y servicios exclusivos de Tripnova. Ingresa los detalles de tu folio para proceder al checkout.</T>
             </p>
           </div>
         </section>
 
         {/* Tarjeta de Formulario Flotante */}
         <section className="container mx-auto px-4 max-w-3xl relative z-20 pb-24 -mt-24">
-          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-2xl p-8 md:p-12">
+          <div className="bg-card rounded-[2.5rem] border border-border shadow-2xl p-8 md:p-12">
             
-            <div className="flex items-center gap-4 mb-10 pb-6 border-b border-slate-100">
-              <div className="w-12 h-12 bg-cyan-50 rounded-full flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-6 h-6 text-cyan-500" />
+            <div className="flex items-center gap-4 mb-10 pb-6 border-b border-border">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h2 className="text-2xl font-black tracking-tight text-slate-900"><T>Detalles de la Reserva</T></h2>
-                <p className="text-slate-500 font-medium text-sm"><T>Tus datos están protegidos y encriptados.</T></p>
+                <h2 className="text-2xl font-black tracking-tight text-foreground"><T>Detalles de la Reserva</T></h2>
+                <p className="text-muted-foreground font-medium text-sm"><T>Tus datos están protegidos y encriptados.</T></p>
               </div>
             </div>
 
             <form onSubmit={handleConfirmarReserva} className="space-y-8">
               
               {/* Bloque Destacado: Monto */}
-              <div className="bg-slate-50 rounded-[1.5rem] p-6 md:p-8 border border-slate-100 focus-within:ring-2 focus-within:ring-primary transition-all">
-                <label className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 block"><T>Monto Acordado (MXN + IVA)</T></label>
+              <div className="bg-background rounded-[1.5rem] p-6 md:p-8 border border-border focus-within:ring-2 focus-within:ring-primary transition-all">
+                <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2 block"><T>Monto Acordado (MXN + IVA)</T></label>
                 <div className="flex items-center mt-2">
-                  <span className="text-4xl md:text-5xl font-black text-slate-300 mr-3">$</span>
+                  <span className="text-4xl md:text-5xl font-black text-muted-foreground mr-3">$</span>
                   <Input 
                     type="text" 
                     value={monto}
                     onChange={handleMontoChange}
                     placeholder="0.00"
                     required
-                    className="border-none bg-transparent p-0 text-4xl md:text-5xl font-black text-slate-900 focus-visible:ring-0 shadow-none h-auto placeholder:text-slate-200 tracking-tighter"
+                    className="border-none bg-transparent p-0 text-4xl md:text-5xl font-black text-foreground focus-visible:ring-0 shadow-none h-auto placeholder:text-muted-foreground/50 tracking-tighter"
                   />
                 </div>
               </div>
@@ -188,11 +191,11 @@ export default function PagoFolioPage() {
               </div>
 
               {/* Botón de Envío */}
-              <div className="pt-8 mt-8 border-t border-slate-100">
+              <div className="pt-8 mt-8 border-t border-border">
                 <button 
                   type="submit" 
                   disabled={!isFormValid}
-                  className="w-full h-16 bg-gradient-to-r from-primary to-cyan-500 hover:opacity-90 text-white font-black rounded-2xl shadow-[0_10px_30px_rgba(99,102,241,0.3)] transition-all duration-300 disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
+                  className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black rounded-2xl shadow-lg shadow-primary/30 transition-all duration-300 disabled:opacity-50 disabled:shadow-none disabled:cursor-not-allowed flex items-center justify-center gap-3 group"
                 >
                   <span className="text-sm uppercase tracking-widest">
                     {btnConfirmar}

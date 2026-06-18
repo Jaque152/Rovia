@@ -1,3 +1,5 @@
+// types.ts
+
 export interface Category {
   id: number;
   name: string;
@@ -13,6 +15,14 @@ export interface ContactMessage {
   created_at: string;
 }
 
+// NUEVO: Definimos la estructura flexible para la nueva BD sin romper la antigua
+export interface ImportantInfo {
+  codigo?: string;
+  requiere_destino?: boolean;
+  // Permite soportar el formato antiguo Record<string, string[]> si alguna experiencia aún lo tiene
+  [key: string]: unknown; 
+}
+
 export interface Experience {
   id: number;
   title: string;
@@ -24,7 +34,7 @@ export interface Experience {
   what_you_will_do?: string[];      
   itinerary?: string[]; 
   requirements?: string[]; 
-  important_info?: Record<string, string[]>; 
+  important_info?: ImportantInfo; // <-- Modificado para aceptar la nueva estructura flexible
   included_general?: string[]; 
   category_id: number;
   categories?: Category; 
@@ -66,15 +76,6 @@ export interface CustomQuote {
   budget: string;
   special_requests: string;
   status: 'pending' | 'attended';
-  created_at: string;
-}
-
-export interface ContactMessage {
-  id: number;
-  full_name: string;
-  phone: string;
-  email: string;
-  message: string;
   created_at: string;
 }
 
@@ -123,11 +124,21 @@ export interface CartItem {
   people: number;
   pricePerPerson: number;
   totalPrice: number; 
+  destino_elegido?: string;
 }
 
 export interface Cart {
   items: CartItem[];
   total: number;
+}
+
+export interface CartContextType {
+  cart: Cart;
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (packageId: number, date: string) => void;
+  clearCart: () => void;
+  getItemCount: () => number;
+  getTotal: () => number;
 }
 
 export interface FifaExp {
@@ -137,6 +148,7 @@ export interface FifaExp {
   description: string;
   items: string[];
   image_url: string;
+  order_index?: number;
 }
 
 export interface SupabaseExperienceResponse {
@@ -149,4 +161,5 @@ export interface SupabaseExperienceResponse {
   category_id: number;
   categories?: { id: number; name: string; slug: string } | null;
   activity_packages?: { price: number; package_name: string }[];
+  important_info?: unknown;
 }
