@@ -142,7 +142,7 @@ export async function POST(req: Request) {
     // 3. ENVÍO DE CORREOS
     // Al cliente:
     const { data, error } = await resend.emails.send({
-      from: 'Tripnova <cotizaciones@tripnova.com>',
+      from: 'Tripnova <info@tripnova.com.mx>', 
       to: [email],
       subject: subjectClient,
       html: htmlClient,
@@ -150,25 +150,31 @@ export async function POST(req: Request) {
 
     if (error) {
       console.error('Error de Resend al enviar al cliente:', error);
-      return NextResponse.json({ error }, { status: 500 });
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     // Al equipo interno:
     const internalMail = await resend.emails.send({
-      from: 'Sistema Tripnova <cotizaciones@tripnova.com>',
-      to: ['soporte@tripnova.com'], // Cambiado a soporte@tripnova.com para unificar
+      from: 'Sistema Tripnova <info@tripnova.com.mx>',
+      to: ['info@tripnova.com.mx'], 
       subject: subjectInternal,
       html: htmlInternal,
     });
 
     if (internalMail.error) {
       console.error('Error al enviar correo interno:', internalMail.error);
+      
     }
 
     return NextResponse.json({ ok: true, data });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error crítico en API Send:', error);
-    return NextResponse.json({ error: 'Error interno' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Error interno' }, { status: 500 });
   }
 }
+
+
+
+
+    

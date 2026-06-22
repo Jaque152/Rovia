@@ -221,10 +221,6 @@ function ExperienciasContent() {
                           <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground mb-4">
                             <MapPin className="w-4 h-4 text-secondary" /> <T>{exp.location}</T>
                           </div>
-
-                          <p className="text-muted-foreground font-medium text-sm line-clamp-2 leading-relaxed mb-6">
-                            <T>{exp.description}</T>
-                          </p>
                           
                           {/* Footer de Tarjeta */}
                           <div className="mt-auto flex items-center justify-between border-t border-border pt-4">

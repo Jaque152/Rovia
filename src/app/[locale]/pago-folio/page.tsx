@@ -65,7 +65,7 @@ export default function PagoFolioPage() {
 
     addToCart(customExperienceItem);
     sessionStorage.setItem("tripnova_temp_contact", JSON.stringify({ nombre, email, folio })); 
-    router.push(`/${locale}/checkout`);
+    router.push(`/${locale}/carrito`);
   };
 
   const minDate = new Date();

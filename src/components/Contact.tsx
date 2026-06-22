@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Loader2, ArrowRight, Plus, Minus } from "lucide-react";
+import { Mail, Loader2, ArrowRight, Plus, Minus, CheckCircle, AlertCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 const faqs = [
@@ -35,19 +35,40 @@ export function Contact() {
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  
+  // Nuevos estados para manejar el feedback visual en lugar de alerts
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMessage(""); // Limpiamos errores previos
+    
     try {
-      const { error: dbError } = await supabase.from("contact_messages_tripnova").insert([{ full_name: formData.name, email: formData.email, phone: formData.phone, message: formData.message }]);
-      if (dbError) throw dbError;
-      const response = await fetch("/api/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "CONTACT", ...formData, customerName: formData.name }) });
-      if (!response.ok) throw new Error("No se pudo enviar");
-      alert("¡Mensaje enviado con éxito!");
+      const { error: dbError } = await supabase.from("contact_messages_tripnova").insert([{ 
+        full_name: formData.name, email: formData.email, phone: formData.phone, message: formData.message 
+      }]);
+      if (dbError) throw new Error(`Error BD: ${dbError.message}`);
+      
+      const response = await fetch("/api/send", { 
+        method: "POST", 
+        headers: { "Content-Type": "application/json" }, 
+        body: JSON.stringify({ type: "CONTACT", ...formData, customerName: formData.name }) 
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || errorData.error || "Fallo al enviar correo");
+      }
+      
+      // Mostrar tarjeta de éxito en lugar del alert
+      setShowSuccess(true);
       setFormData({ name: "", phone: "", email: "", message: "" });
-    } catch (error) {
-      alert("Hubo un error al enviar tu mensaje.");
+    } catch (error: any) {
+      console.error("Error en Contacto:", error);
+      // Mostrar mensaje de error en la UI en lugar del alert
+      setErrorMessage(error.message || "Hubo un error al enviar tu mensaje.");
     } finally {
       setIsSubmitting(false);
     }
@@ -93,48 +114,75 @@ export function Contact() {
             </div>
           </div>
 
-          {/* Lado Derecho: Formulario */}
-          <div className="bg-card rounded-3xl shadow-xl border border-border p-8 md:p-10">
-            <div className="mb-8">
-              <h3 className="text-2xl font-black text-foreground mb-2"><T>Contact Us</T></h3>
-              <p className="text-sm text-muted-foreground font-medium"><T>Cuéntanos sobre tu próximo viaje o solicita soporte.</T></p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase text-muted-foreground ml-1"><T>Nombre</T></label>
-                  <Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required className="h-12 bg-background border-border rounded-xl px-4" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase text-muted-foreground ml-1"><T>Teléfono</T></label>
-                  <Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required className="h-12 bg-background border-border rounded-xl px-4" />
-                </div>
+          {/* Lado Derecho: Formulario o Tarjeta de Éxito */}
+          {showSuccess ? (
+            <div className="bg-card rounded-3xl shadow-xl border border-border p-10 md:p-16 text-center flex flex-col items-center justify-center h-full min-h-[500px] animate-fade-in">
+              <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-8">
+                <CheckCircle className="w-12 h-12 text-primary" />
               </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-muted-foreground ml-1"><T>Correo Electrónico</T></label>
-                <Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required className="h-12 bg-background border-border rounded-xl px-4" />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between ml-1">
-                  <label className="text-xs font-bold uppercase text-muted-foreground"><T>Mensaje</T></label>
-                  <span className="text-xs font-medium text-muted-foreground">{formData.message.length}/180</span>
-                </div>
-                <Textarea value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} rows={4} maxLength={180} className="bg-background border-border rounded-xl px-4 py-3 resize-none" />
-              </div>
-
-              <Button type="submit" disabled={!formData.name || isSubmitting} className="w-full h-14 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-lg transition-all group">
-                {isSubmitting ? <Loader2 className="animate-spin w-5 h-5 mr-2" /> : <T>Enviar Solicitud</T>}
-                {!isSubmitting && <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />}
+              <h3 className="text-3xl font-black text-foreground mb-4 tracking-tight"><T>¡Mensaje Enviado!</T></h3>
+              <p className="text-muted-foreground font-medium mb-10 leading-relaxed">
+                <T>Gracias por contactarnos. Hemos recibido tu mensaje correctamente y nuestro equipo de soporte se comunicará contigo a la brevedad posible.</T>
+              </p>
+              <Button 
+                onClick={() => setShowSuccess(false)} 
+                variant="outline" 
+                className="h-14 px-8 rounded-xl font-bold border-border hover:bg-foreground hover:text-background transition-colors"
+              >
+                <T>Enviar otro mensaje</T>
               </Button>
-            </form>
-
-            <div className="mt-8 pt-8 border-t border-border flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground">
-               <Mail className="w-4 h-4" /> soporte@tripnova.com
             </div>
-          </div>
+          ) : (
+            <div className="bg-card rounded-3xl shadow-xl border border-border p-8 md:p-10 relative">
+              <div className="mb-8">
+                <h3 className="text-2xl font-black text-foreground mb-2"><T>Contactanos</T></h3>
+                <p className="text-sm text-muted-foreground font-medium"><T>Cuéntanos sobre tu próximo viaje o solicita soporte.</T></p>
+              </div>
+
+              {/* Mensaje de Error (Reemplazo del alert) */}
+              {errorMessage && (
+                <div className="mb-8 p-4 bg-destructive/10 border border-destructive/20 rounded-xl flex items-start gap-3 text-destructive font-medium text-sm animate-fade-in">
+                  <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                  <p>{errorMessage}</p>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase text-muted-foreground ml-1"><T>Nombre</T></label>
+                    <Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required className="h-12 bg-background border-border rounded-xl px-4" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase text-muted-foreground ml-1"><T>Teléfono</T></label>
+                    <Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required className="h-12 bg-background border-border rounded-xl px-4" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase text-muted-foreground ml-1"><T>Correo Electrónico</T></label>
+                  <Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required className="h-12 bg-background border-border rounded-xl px-4" />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between ml-1">
+                    <label className="text-xs font-bold uppercase text-muted-foreground"><T>Mensaje</T></label>
+                    <span className="text-xs font-medium text-muted-foreground">{formData.message.length}/180</span>
+                  </div>
+                  <Textarea value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} rows={4} maxLength={180} className="bg-background border-border rounded-xl px-4 py-3 resize-none" />
+                </div>
+
+                <Button type="submit" disabled={!formData.name || isSubmitting} className="w-full h-14 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-lg transition-all shadow-lg shadow-primary/20 group">
+                  {isSubmitting ? <Loader2 className="animate-spin w-5 h-5 mr-2" /> : <T>Enviar Solicitud</T>}
+                  {!isSubmitting && <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />}
+                </Button>
+              </form>
+
+              <div className="mt-8 pt-8 border-t border-border flex items-center justify-center gap-2 text-sm font-medium text-muted-foreground">
+                 <Mail className="w-4 h-4" /> info@tripnova.com.mx
+              </div>
+            </div>
+          )}
 
         </div>
       </div>

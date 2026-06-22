@@ -64,7 +64,7 @@ export function Footer() {
           <div>
             <h4 className="font-bold mb-6 text-white uppercase tracking-widest text-xs"><T>Soporte</T></h4>
             <ul className="space-y-4 text-sm font-medium text-background/60">
-              <li className="flex items-center gap-3"><Mail className="w-4 h-4 text-primary" /> soporte@tripnova.com</li>
+              <li className="flex items-center gap-3"><Mail className="w-4 h-4 text-primary" /> info@tripnova.com.mx</li>
               <li className="flex items-center gap-3"><Phone className="w-4 h-4 text-primary" /> +52 55 5555 5555</li>
               <li className="flex items-center gap-3"><MapPin className="w-4 h-4 text-primary" /> Ciudad de México, MX</li>
             </ul>

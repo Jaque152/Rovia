@@ -76,7 +76,7 @@ export function Hero() {
               </div>
               <div>
                 <p className="text-xs font-bold text-foreground/60 uppercase"><T>Siguiente Parada</T></p>
-                <p className="text-lg font-black text-foreground"><T>Oaxaca, MX</T></p>
+                
               </div>
             </div>
 

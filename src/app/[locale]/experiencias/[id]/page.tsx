@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/CartContext";
 import { Experience, ActivityPackage, CartItem } from "@/lib/types"; 
 import { T } from "@/components/T";
-import { useT } from "@/hooks/useT"; // Importamos el hook para el placeholder
+import { useT } from "@/hooks/useT"; 
 import {
   Check, Minus, Plus, Loader2, MapPin, Compass, Sparkles, Fingerprint
 } from "lucide-react";
@@ -128,7 +128,7 @@ export default function ExperienceDetailPage() {
                 )}
               </div>
 
-              {/* Título de la experiencia (Traducido) */}
+              {/* Título de la experiencia */}
               <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter leading-tight">
                 <T>{experience.title}</T>
               </h1>
@@ -168,6 +168,7 @@ export default function ExperienceDetailPage() {
                 <div className="mb-8 p-6 bg-background rounded-2xl border border-border">
                   <p className="text-xs font-black uppercase text-muted-foreground mb-2"><T>Total por viajero</T></p>
                   <p className="text-4xl font-black text-primary tracking-tight">{formatPrice(selectedPackage.price)}</p>
+                  <p className="text-xs font-black uppercase "><T>IVA incluido</T></p>
                 </div>
               )}
 

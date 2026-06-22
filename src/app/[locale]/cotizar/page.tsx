@@ -47,6 +47,7 @@ export default function CotizarPage() {
     setIsSubmitting(true);
 
     try {
+      // 1. Guardar en Base de Datos
       const customer_name = `${formData.firstName} ${formData.lastName}`.trim();
       const { error: dbError } = await supabase.from('custom_quotes_tripnova').insert([
         {
@@ -55,19 +56,28 @@ export default function CotizarPage() {
           special_requests: formData.requirements, status: 'pending'
         }
       ]);
-      if (dbError) throw dbError;
-      await fetch('/api/send', {
+      
+      if (dbError) throw new Error(`Error BD: ${dbError.message}`);
+
+      // 2. Enviar Correo
+      const response = await fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type: 'QUOTE', locale: locale, email: formData.email, customerName: formData.firstName, destination: formData.destination,
+          type: 'QUOTE', locale: locale, email: formData.email, phone: formData.phone, customerName: formData.firstName, destination: formData.destination,
           budget: formData.budget, startDate: formData.startDate, travelers: formData.travelers, message: formData.requirements || "Solicitud de itinerario personalizado."
         }),
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error Email: ${errorData.error?.message || errorData.error || 'Fallo al enviar correo'}`);
+      }
+      
       setShowSuccess(true);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Error desconocido';
-      alert(`Hubo un error: ${message}`);
+    } catch (error: any) {
+      console.error("Error en Cotización:", error);
+      alert(`No pudimos procesar tu solicitud: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }

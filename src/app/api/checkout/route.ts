@@ -253,7 +253,7 @@ export async function POST(req: Request) {
     `;
 
     await resend.emails.send({
-      from: 'Tripnova <reservas@tripnova.com>', 
+      from: 'Tripnova <info@tripnova.com.mx>', 
       to: [contactInfo.email], 
       subject: subjectClient,
       html: htmlClient,
@@ -287,8 +287,8 @@ export async function POST(req: Request) {
     `;
 
     await resend.emails.send({
-      from: 'Sistema Tripnova <reservas@tripnova.com>',
-      to: ['soporte@tripnova.com'],
+      from: 'Sistema Tripnova <info@tripnova.com.mx>',
+      to: ['info@tripnova.com.mx'],
       subject: subjectInternal,
       html: htmlInternal,
     });
