@@ -75,9 +75,10 @@ export default function CotizarPage() {
       }
       
       setShowSuccess(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error en Cotización:", error);
-      alert(`No pudimos procesar tu solicitud: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      alert(`No pudimos procesar tu solicitud: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }

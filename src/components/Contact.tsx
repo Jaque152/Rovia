@@ -65,10 +65,10 @@ export function Contact() {
       // Mostrar tarjeta de éxito en lugar del alert
       setShowSuccess(true);
       setFormData({ name: "", phone: "", email: "", message: "" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error en Contacto:", error);
-      // Mostrar mensaje de error en la UI en lugar del alert
-      setErrorMessage(error.message || "Hubo un error al enviar tu mensaje.");
+      const msg = error instanceof Error ? error.message : "Hubo un error al enviar tu mensaje.";
+      setErrorMessage(msg);
     } finally {
       setIsSubmitting(false);
     }

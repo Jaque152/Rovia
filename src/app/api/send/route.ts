@@ -168,9 +168,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true, data });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error crítico en API Send:', error);
-    return NextResponse.json({ error: error.message || 'Error interno' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Error interno';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
