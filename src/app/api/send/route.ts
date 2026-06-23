@@ -8,31 +8,38 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { type, customerName, email, phone, message, destination, locale, budget, startDate, travelers } = body;
 
-    // 1.  AMBOS tipos de formulario
     if (type !== 'CONTACT' && type !== 'QUOTE') {
       return NextResponse.json({ error: 'Tipo de correo no soportado' }, { status: 400 });
     }
 
-    // Colores Tripnova (Sunset Horizon)
-    const bgDark = '#1A1A1A'; // Deep Onyx
-    const textAccent = '#FF6B6B'; // Vibrant Coral
-    const textGold = '#FCA311'; // Golden Sand
-    const bgLight = '#FAFAFA'; // Off-White
-    const textColor = '#444444'; // Gris oscuro para lectura
+    const bgDark = '#1A1A1A';
+    const textAccent = '#FF6B6B';
+    const textGold = '#FCA311';
+    const bgLight = '#FAFAFA';
+    const textColor = '#444444';
 
     let subjectClient = '';
     let htmlClient = '';
     let subjectInternal = '';
     let htmlInternal = '';
 
-    const greeting = `¡Hola ${customerName}!`;
+    // Variables de traducción general
+    const isEn = locale === 'en';
+    const greeting = isEn ? `Hello ${customerName}!` : `¡Hola ${customerName}!`;
 
     // ==========================================
     // 2A. LÓGICA PARA CONTACTO GENERAL
     // ==========================================
     if (type === 'CONTACT') {
-      subjectClient = '[Tripnova] Hemos recibido tu mensaje';
+      subjectClient = isEn ? '[Tripnova] We have received your message' : '[Tripnova] Hemos recibido tu mensaje';
       subjectInternal = `[NUEVO MENSAJE DE CONTACTO] - ${customerName}`;
+
+      const bodyText = isEn 
+        ? 'We have successfully received your message. Our team of experts is analyzing it and we will contact you shortly to help you with your next adventure.'
+        : 'Hemos recibido tu mensaje con éxito. Nuestro equipo de expertos lo está analizando y nos pondremos en contacto contigo a la brevedad para ayudarte en tu próxima aventura.';
+      const msgLabel = isEn ? 'Your message record' : 'Registro de tu mensaje';
+      const noMsgText = isEn ? 'No additional message.' : 'Sin mensaje adicional.';
+      const btnText = isEn ? 'Explore Routes' : 'Explorar Rutas';
 
       htmlClient = `
         <div style="font-family: 'DM Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1a1a1a; max-width: 600px; margin: auto; border: 1px solid #e5e5e5; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
@@ -41,16 +48,16 @@ export async function POST(req: Request) {
           </div>
           <div style="padding: 40px 30px; background-color: #ffffff;">
             <h2 style="color: ${bgDark}; margin-top: 0; font-size: 24px; font-weight: 800;">${greeting}</h2>
-            <p style="font-size: 16px; line-height: 1.6; color: ${textColor};">Hemos recibido tu mensaje con éxito. Nuestro equipo de expertos lo está analizando y nos pondremos en contacto contigo a la brevedad para ayudarte en tu próxima aventura.</p>
+            <p style="font-size: 16px; line-height: 1.6; color: ${textColor};">${bodyText}</p>
             
             <div style="margin: 30px 0; padding: 25px; border-radius: 16px; border: 1px solid #e5e5e5; background-color: ${bgLight};">
-              <p style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #999999; margin-top: 0; margin-bottom: 15px;">Registro de tu mensaje</p>
-              <p style="font-size: 14px; font-style: italic; color: ${textColor}; margin: 0; line-height: 1.5;">"${message || 'Sin mensaje adicional.'}"</p>
+              <p style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #999999; margin-top: 0; margin-bottom: 15px;">${msgLabel}</p>
+              <p style="font-size: 14px; font-style: italic; color: ${textColor}; margin: 0; line-height: 1.5;">"${message || noMsgText}"</p>
             </div>
 
             <div style="text-align: center; margin-top: 40px;">
-              <a href="https://tripnova.com/es/#experiencias" style="display: inline-block; background-color: ${textAccent}; color: #ffffff; padding: 16px 32px; border-radius: 9999px; text-decoration: none; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
-                Explorar Rutas
+              <a href="https://tripnova.com/${locale}/#experiencias" style="display: inline-block; background-color: ${textAccent}; color: #ffffff; padding: 16px 32px; border-radius: 9999px; text-decoration: none; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
+                ${btnText}
               </a>
             </div>
           </div>
@@ -74,46 +81,58 @@ export async function POST(req: Request) {
     // 2B. LÓGICA PARA COTIZACIONES
     // ==========================================
     else if (type === 'QUOTE') {
-      subjectClient = `[Tripnova] Estamos diseñando tu ruta a ${destination}`;
+      subjectClient = isEn ? `[Tripnova] We are designing your route to ${destination}` : `[Tripnova] Estamos diseñando tu ruta a ${destination}`;
       subjectInternal = `[NUEVA COTIZACIÓN] - ${destination} - ${customerName}`;
+
+      const conciergeTitle = isEn ? 'Concierge Service' : 'Servicio Concierge';
+      const bodyText = isEn 
+        ? `We have received your coordinates for <strong>${destination}</strong>. Our team is already orchestrating your tailor-made itinerary and we will contact you very soon with an incredible proposal.`
+        : `Hemos recibido tus coordenadas para <strong>${destination}</strong>. Nuestro equipo ya está orquestando tu itinerario a la medida y nos pondremos en contacto contigo muy pronto con una propuesta increíble.`;
+      
+      const reqLabel = isEn ? 'Details of your request' : 'Detalles de tu solicitud';
+      const destLabel = isEn ? 'Destination:' : 'Destino:';
+      const dateLabel = isEn ? 'Start date:' : 'Fecha de inicio:';
+      const paxLabel = isEn ? 'Travelers:' : 'Viajeros:';
+      const budgetLabel = isEn ? 'Estimated budget:' : 'Presupuesto estimado:';
+      const specialReqLabel = isEn ? 'Special Requirements' : 'Requerimientos Especiales';
 
       htmlClient = `
         <div style="font-family: 'DM Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1a1a1a; max-width: 600px; margin: auto; border: 1px solid #e5e5e5; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
           <div style="background-color: ${bgDark}; padding: 40px 30px; text-align: center; border-bottom: 4px solid ${textAccent};">
             <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">TRIPNOVA</h1>
-            <p style="color: ${textGold}; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 4px; margin-top: 10px;">Servicio Concierge</p>
+            <p style="color: ${textGold}; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 4px; margin-top: 10px;">${conciergeTitle}</p>
           </div>
           <div style="padding: 40px 30px; background-color: #ffffff;">
             <h2 style="color: ${bgDark}; margin-top: 0; font-size: 24px; font-weight: 800;">${greeting}</h2>
-            <p style="font-size: 16px; line-height: 1.6; color: ${textColor};">Hemos recibido tus coordenadas para <strong>${destination}</strong>. Nuestro equipo ya está orquestando tu itinerario a la medida y nos pondremos en contacto contigo muy pronto con una propuesta increíble.</p>
+            <p style="font-size: 16px; line-height: 1.6; color: ${textColor};">${bodyText}</p>
                         
             <div style="margin: 30px 0; padding: 25px; border-radius: 16px; border: 1px solid #e5e5e5; background-color: ${bgLight};">
-              <p style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #999999; margin-top: 0; margin-bottom: 20px;">Detalles de tu solicitud</p>
+              <p style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #999999; margin-top: 0; margin-bottom: 20px;">${reqLabel}</p>
               
               <div style="margin-bottom: 12px;">
-                <span style="font-size: 14px; color: #888888; font-weight: 600;">Destino:</span><br/>
+                <span style="font-size: 14px; color: #888888; font-weight: 600;">${destLabel}</span><br/>
                 <span style="font-size: 16px; color: ${bgDark}; font-weight: 800;">${destination}</span>
               </div>
               
               <div style="margin-bottom: 12px;">
-                <span style="font-size: 14px; color: #888888; font-weight: 600;">Fecha de inicio:</span><br/>
+                <span style="font-size: 14px; color: #888888; font-weight: 600;">${dateLabel}</span><br/>
                 <span style="font-size: 16px; color: ${bgDark}; font-weight: 800;">${startDate}</span>
               </div>
               
               <div style="margin-bottom: 12px;">
-                <span style="font-size: 14px; color: #888888; font-weight: 600;">Viajeros:</span><br/>
+                <span style="font-size: 14px; color: #888888; font-weight: 600;">${paxLabel}</span><br/>
                 <span style="font-size: 16px; color: ${bgDark}; font-weight: 800;">${travelers}</span>
               </div>
               
               <div>
-                <span style="font-size: 14px; color: #888888; font-weight: 600;">Presupuesto estimado:</span><br/>
+                <span style="font-size: 14px; color: #888888; font-weight: 600;">${budgetLabel}</span><br/>
                 <span style="font-size: 16px; color: ${textAccent}; font-weight: 800;">${budget}</span>
               </div>
             </div>
 
             ${message ? `
             <div style="background-color: ${bgLight}; padding: 20px; border-radius: 12px; border-left: 4px solid ${textGold}; margin-bottom: 30px;">
-              <p style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #999999; margin-top: 0; margin-bottom: 10px;">Requerimientos Especiales</p>
+              <p style="font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #999999; margin-top: 0; margin-bottom: 10px;">${specialReqLabel}</p>
               <p style="margin: 0; font-size: 14px; font-style: italic; color: ${textColor}; line-height: 1.5;">"${message}"</p>
             </div>
             ` : ''}
@@ -140,9 +159,8 @@ export async function POST(req: Request) {
     }
 
     // 3. ENVÍO DE CORREOS
-    // Al cliente:
     const { data, error } = await resend.emails.send({
-      from: 'Tripnova <info@tripnova.com.mx>', 
+      from: 'Tripnova <info@tripnova.com.mx>',
       to: [email],
       subject: subjectClient,
       html: htmlClient,
@@ -153,7 +171,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Al equipo interno:
     const internalMail = await resend.emails.send({
       from: 'Sistema Tripnova <info@tripnova.com.mx>',
       to: ['info@tripnova.com.mx'], 
@@ -163,7 +180,6 @@ export async function POST(req: Request) {
 
     if (internalMail.error) {
       console.error('Error al enviar correo interno:', internalMail.error);
-      
     }
 
     return NextResponse.json({ ok: true, data });
@@ -174,8 +190,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
-
-
-
-
-    

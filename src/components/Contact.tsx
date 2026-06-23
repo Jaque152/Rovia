@@ -2,6 +2,7 @@
 
 import { T } from "@/components/T";
 import { useState } from "react";
+import { useLocale } from "next-intl"; // <-- 1. Importamos el hook
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,18 +33,18 @@ const faqs = [
 ];
 
 export function Contact() {
+  const locale = useLocale(); // <-- 2. Obtenemos el idioma actual
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   
-  // Nuevos estados para manejar el feedback visual en lugar de alerts
   const [showSuccess, setShowSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setErrorMessage(""); // Limpiamos errores previos
+    setErrorMessage(""); 
     
     try {
       const { error: dbError } = await supabase.from("contact_messages_tripnova").insert([{ 
@@ -54,7 +55,8 @@ export function Contact() {
       const response = await fetch("/api/send", { 
         method: "POST", 
         headers: { "Content-Type": "application/json" }, 
-        body: JSON.stringify({ type: "CONTACT", ...formData, customerName: formData.name }) 
+        // 3. Agregamos locale al envío de la petición 👇
+        body: JSON.stringify({ type: "CONTACT", locale: locale, ...formData, customerName: formData.name }) 
       });
       
       if (!response.ok) {
@@ -62,7 +64,6 @@ export function Contact() {
         throw new Error(errorData.error?.message || errorData.error || "Fallo al enviar correo");
       }
       
-      // Mostrar tarjeta de éxito en lugar del alert
       setShowSuccess(true);
       setFormData({ name: "", phone: "", email: "", message: "" });
     } catch (error: unknown) {
@@ -139,7 +140,6 @@ export function Contact() {
                 <p className="text-sm text-muted-foreground font-medium"><T>Cuéntanos sobre tu próximo viaje o solicita soporte.</T></p>
               </div>
 
-              {/* Mensaje de Error (Reemplazo del alert) */}
               {errorMessage && (
                 <div className="mb-8 p-4 bg-destructive/10 border border-destructive/20 rounded-xl flex items-start gap-3 text-destructive font-medium text-sm animate-fade-in">
                   <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />

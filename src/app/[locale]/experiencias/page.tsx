@@ -210,7 +210,7 @@ function ExperienciasContent() {
                             </span>
                             <div className="text-right">
                               <p className="text-lg md:text-2xl font-black text-foreground leading-none">{formatPrice(exp.displayPrice)} MXN</p>
-                              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1"><T>Por Viajero</T></p>
+                              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1"><T>IVA incluido</T></p>
                             </div>
                           </div>
 

@@ -170,11 +170,7 @@ export default function CotizarPage() {
                   <label className={labelClass}><Wallet className="w-4 h-4 text-primary" /> <T>Presupuesto</T></label>
                   <select value={formData.budget} onChange={(e) => setFormData({ ...formData, budget: e.target.value })} className={`${inputClass} w-full cursor-pointer appearance-none`}>
                     <option value="" disabled className="text-muted-foreground">{phSelectRange}</option>
-                    <option value="Menos de $10,000 MXN" className="font-bold">Menos de $10,000 MXN</option>
-                    <option value="$10,000 - $25,000 MXN" className="font-bold">$10,000 - $25,000 MXN</option>
-                    <option value="$25,000 - $50,000 MXN" className="font-bold">$25,000 - $50,000 MXN</option>
-                    <option value="$50,000 - $100,000 MXN" className="font-bold">$50,000 - $100,000 MXN</option>
-                    <option value="Más de $100,000 MXN" className="font-bold">Más de $100,000 MXN</option>
+                    {BUDGET_OPTIONS.map((o) => <TranslatedOption key={o} value={o} />)}
                   </select>
                 </div>
                 <div className="md:col-span-2 mt-2">

@@ -35,6 +35,61 @@ async function safeEtominFetch(url: string, options: RequestInit, stepName: stri
   }
 }
 
+// === DICCIONARIO DE TRADUCCIÓN PARA EL CORREO ===
+const enTranslations: Record<string, string> = {
+  "Tarifa Única": "Flat Rate",
+  "Aventura Personalizada": "Custom Adventure",
+  "Personalizado": "Customized",
+  "Sesión de Yoga con Meditación Sonora": "Yoga Session with Sound Meditation",
+  "Itinerario Express": "Express Itinerary",
+  "Experiencias Indígenas Comunitarias": "Indigenous Community Experiences",
+  "Clase de Yoga en la Naturaleza": "Nature Yoga Class",
+  "Guía Local en Pueblos Mágicos": "Local Guide in Magical Towns",
+  "Temazcal Comunitario Tradicional": "Traditional Community Temazcal",
+  "Itinerario Económico Digital": "Digital Budget Itinerary",
+  "Itinerario para Viajeros Mochileros": "Backpackers Itinerary",
+  "Taller de Papel Amate": "Amate Paper Workshop",
+  "Taller de Textiles Tradicionales": "Traditional Textiles Workshop",
+  "Recomendaciones de Renta de Autos": "Car Rental Recommendations",
+  "Experiencia Huasteca Cultural": "Huasteca Cultural Experience",
+  "Experiencia Purépecha Cultural": "Purepecha Cultural Experience",
+  "Taller de Barro Tradicional": "Traditional Clay Workshop",
+  "Taller de Máscaras Tradicionales": "Traditional Masks Workshop",
+  "Tour de Mezcal": "Mezcal Tour",
+  "Taller de Talabartería": "Leatherworking Workshop",
+  "Taller de Alebrijes": "Alebrijes Workshop",
+  "Experiencia de Bienestar en Cenotes": "Wellness Experience in Cenotes",
+  "Tour de 2 Cenotes": "2 Cenotes Tour",
+  "Experiencia de Cocina Tradicional Maya": "Traditional Mayan Cooking Experience",
+  "Experiencia de Temazcal Tradicional": "Traditional Temazcal Experience",
+  "Taller de Cerámica Tradicional": "Traditional Ceramics Workshop",
+  "Itinerario de Pueblos Mágicos": "Magical Towns Itinerary",
+  "Itinerario Gastronómico": "Gastronomic Itinerary",
+  "Itinerario para Road Trip": "Road Trip Itinerary",
+  "Tour Gastronómico": "Gastronomic Tour",
+  "Itinerario Cultural e Histórico": "Cultural and Historical Itinerary",
+  "Circuito de Spa y Relajación": "Spa and Relaxation Circuit",
+  "Experiencia de Spa Natural con Temazcal": "Natural Spa Experience with Temazcal",
+  "Itinerario Familiar": "Family Itinerary",
+  "Itinerario de Aventura": "Adventure Itinerary",
+  "Paquete Explorador": "Explorer Package",
+  "Experiencia de Temazcal en Resort": "Resort Temazcal Experience",
+  "Itinerario Romántico": "Romantic Itinerary",
+  "Plan Travel Planner Profesional": "Professional Travel Planner",
+  "Plan Concierge de Viaje": "Travel Concierge Plan",
+  "Paquete Aventura Total": "Total Adventure Package",
+  "Retiro Corto de Yoga y Meditación": "Short Yoga & Meditation Retreat",
+  "Paquete Viaje Completo": "Complete Travel Package",
+  "Retiro de Yoga frente al Mar": "Beachfront Yoga Retreat"
+};
+
+const translateText = (text: string, locale: string) => {
+  if (locale !== 'en') return text;
+  if (text.startsWith('Pago de folio:')) return text.replace('Pago de folio:', 'Folio payment:');
+  return enTranslations[text] || text;
+};
+// =================================================
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -79,7 +134,7 @@ export async function POST(req: Request) {
     const etominItems = manualFolioData 
       ? [{ title: `Pago Cotización: ${manualFolioData.folio}`, amount: manualFolioData.amount, quantity: 1, id: manualFolioData.folio }]
       : cart.items.map((item: CartItem) => ({
-          title: item.experience.title,
+          title: item.experience.title, // Se envía en su idioma original a la pasarela
           amount: item.pricePerPerson,
           quantity: item.people,
           id: item.packageId.toString(),
@@ -216,8 +271,8 @@ export async function POST(req: Request) {
                 ${!manualFolioData ? cart.items.map((item: CartItem) => `
                   <tr style="border-bottom: 1px solid #fafafa;">
                     <td style="padding: 20px 0;">
-                      <p style="margin: 0; font-weight: 800; font-size: 16px; color: #1a1a1a;">${item.experience.title}</p>
-                      <p style="margin: 6px 0 0; font-size: 13px; color: #666666;">📅 ${item.date} <br>✨ ${item.levelName}</p>
+                      <p style="margin: 0; font-weight: 800; font-size: 16px; color: #1a1a1a;">${translateText(item.experience.title, locale)}</p>
+                      <p style="margin: 6px 0 0; font-size: 13px; color: #666666;">📅 ${item.date} <br>✨ ${translateText(item.levelName, locale)}</p>
                     </td>
                     <td style="padding: 20px 0; text-align: center; vertical-align: top; font-weight: 600; color: #444444;">${item.people}</td>
                     <td style="padding: 20px 0; text-align: right; font-weight: 800; font-size: 15px; color: #1a1a1a; vertical-align: top;">${formatPrice(item.totalPrice)}</td>
