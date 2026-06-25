@@ -115,11 +115,22 @@ export function Header() {
           <SheetContent side="right" className="rounded-l-[2rem] border-l-0 bg-background/95 backdrop-blur-2xl">
             <SheetTitle className="sr-only"><T>Menú de navegación</T></SheetTitle>
             <div className="flex flex-col gap-10 mt-24 px-6">
-              {navLinks.map((link) => (
-                <Link key={link.href} href={`/${locale}${link.href}`} className="text-5xl font-black text-foreground hover:text-primary transition-colors tracking-tighter">
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                // Validación para construir correctamente los enlaces con anclas
+                const href = link.href.startsWith("/#") 
+                  ? `/${locale}${link.href.replace('/#', '#')}` 
+                  : `/${locale}${link.href}`;
+
+                return (
+                  <Link 
+                    key={link.href} 
+                    href={href} 
+                    className="text-5xl font-black text-foreground hover:text-primary transition-colors tracking-tighter"
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
             
             {/* Info extra dentro del menú */}

@@ -1,8 +1,8 @@
 'use client';
 
 import { T } from "@/components/T";
-import { useState } from "react";
-import { useLocale } from "next-intl"; // <-- 1. Importamos el hook
+import { useState, useEffect } from "react";
+import { useLocale } from "next-intl"; 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,13 +33,25 @@ const faqs = [
 ];
 
 export function Contact() {
-  const locale = useLocale(); // <-- 2. Obtenemos el idioma actual
+  const locale = useLocale(); 
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   
   const [showSuccess, setShowSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Efecto para hacer scroll suave a la sección de contacto si la URL tiene el ancla #contacto
+  useEffect(() => {
+    if (window.location.hash === '#contacto') {
+      const element = document.getElementById('contacto');
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 300); // Pequeño retraso para que el DOM termine de pintar
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,7 +67,6 @@ export function Contact() {
       const response = await fetch("/api/send", { 
         method: "POST", 
         headers: { "Content-Type": "application/json" }, 
-        // 3. Agregamos locale al envío de la petición 👇
         body: JSON.stringify({ type: "CONTACT", locale: locale, ...formData, customerName: formData.name }) 
       });
       
