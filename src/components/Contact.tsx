@@ -52,7 +52,7 @@ export function Contact() {
     setErrorMessage(""); 
     
     try {
-      const { error: dbError } = await supabase.from("contact_messages_tripnova").insert([{ 
+      const { error: dbError } = await supabase.from("contact_messages_rovia").insert([{ 
         full_name: formData.name, email: formData.email, phone: formData.phone, message: formData.message 
       }]);
       if (dbError) throw new Error(`Error BD: ${dbError.message}`);

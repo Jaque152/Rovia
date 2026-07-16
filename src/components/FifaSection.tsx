@@ -15,7 +15,7 @@ export function FifaSection() {
 
   useEffect(() => {
     async function loadFifaData() {
-      const { data } = await supabase.from('fifa_experiences_tripnova').select('*').order('order_index', { ascending: true });
+      const { data } = await supabase.from('fifa_experiences_rovia').select('*').order('order_index', { ascending: true });
       if (data) {
         setFifaExps(data);
         if (data.length > 0) setActiveExpId(data[0].id); 

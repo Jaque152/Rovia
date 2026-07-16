@@ -7,15 +7,15 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!; 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// --- CREDENCIALES ETOMIN ---
-const ETOMIN_EMAIL = process.env.ETOMIN_EMAIL!;
-const ETOMIN_PASSWORD = process.env.ETOMIN_PASSWORD!;
-const ETOMIN_BASE_URL = 'https://pagos.etomin.com/api/v1';
+// --- CREDENCIALES OCTANO ---
+const OCTANO_EMAIL = process.env.OCTANO_EMAIL!;
+const OCTANO_PASSWORD = process.env.OCTANO_PASSWORD!;
+const OCTANO_BASE_URL = 'https://pagos.octanopayments.com/api/v1';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const formatPrice = (price: number) => new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }).format(price);
 
-const getEtominHeaders = (extraHeaders = {}) => ({
+const getOctanoHeaders = (extraHeaders = {}) => ({
   'Content-Type': 'application/json',
   'Accept': 'application/json',
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -23,15 +23,15 @@ const getEtominHeaders = (extraHeaders = {}) => ({
   ...extraHeaders
 });
 
-async function safeEtominFetch(url: string, options: RequestInit, stepName: string) {
+async function safeOctanoFetch(url: string, options: RequestInit, stepName: string) {
   const res = await fetch(url, options);
   const text = await res.text(); 
   
   try {
     return JSON.parse(text);
   } catch (e) {
-    console.error(`Respuesta cruda de Etomin en [${stepName}]:`, text);
-    throw new Error(`Falla en ${stepName}. Etomin respondió: ${text.slice(0, 50)}...`);
+    console.error(`Respuesta cruda de Octano en [${stepName}]:`, text);
+    throw new Error(`Falla en ${stepName}. Octano respondió: ${text.slice(0, 50)}...`);
   }
 }
 
@@ -97,19 +97,23 @@ export async function POST(req: Request) {
 
     const tempReferenceId = `REF-${Date.now()}`;
 
-    // 1. SIGNIN EN ETOMIN
-    const signinData = await safeEtominFetch(`${ETOMIN_BASE_URL}/signin`, {
+    // 1. SIGNIN EN OCTANO (Usando x-www-form-urlencoded según la documentación)
+    const signinData = await safeOctanoFetch(`${OCTANO_BASE_URL}/signin`, {
       method: 'POST',
-      headers: getEtominHeaders(),
-      body: JSON.stringify({ email: ETOMIN_EMAIL, password: ETOMIN_PASSWORD })
-    }, 'Login Etomin');
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+        'Origin': 'https://rovia.com.mx'
+      },
+      body: new URLSearchParams({ email: OCTANO_EMAIL, password: OCTANO_PASSWORD }).toString()
+    }, 'Login Octano');
     
     if (!signinData.authToken) {
-      throw new Error("Credenciales de Etomin incorrectas o bloqueadas.");
+      throw new Error("Credenciales de Octano incorrectas o bloqueadas.");
     }
     const authToken = signinData.authToken;
 
-    // 2. TOKENIZACIÓN DE TARJETA ETOMIN
+    // 2. TOKENIZACIÓN DE TARJETA OCTANO
     const cardPayload = {
       cardData: {
         cardNumber: cardInfo.number,
@@ -119,22 +123,22 @@ export async function POST(req: Request) {
       }
     };
 
-    const tokenData = await safeEtominFetch(`${ETOMIN_BASE_URL}/card/tokenizer`, {
+    const tokenData = await safeOctanoFetch(`${OCTANO_BASE_URL}/card/tokenizer`, {
       method: 'POST',
-      headers: getEtominHeaders({ 'Authorization': `Bearer ${authToken}` }),
+      headers: getOctanoHeaders({ 'Authorization': `Bearer ${authToken}` }),
       body: JSON.stringify(cardPayload)
     }, 'Tokenización de Tarjeta');
 
     if (!tokenData.cardNumberToken) {
-      throw new Error("Tarjeta rechazada por Etomin (Datos inválidos o encriptación fallida).");
+      throw new Error("Tarjeta rechazada por OctanoPayments (Datos inválidos o encriptación fallida).");
     }
     const cardToken = tokenData.cardNumberToken;
 
     // 3. PREPARAR ITEMS PARA LA VENTA
-    const etominItems = manualFolioData 
+    const octanoItems = manualFolioData 
       ? [{ title: `Pago Cotización: ${manualFolioData.folio}`, amount: manualFolioData.amount, quantity: 1, id: manualFolioData.folio }]
       : cart.items.map((item: CartItem) => ({
-          title: item.experience.title, // Se envía en su idioma original a la pasarela
+          title: item.experience.title,
           amount: item.pricePerPerson,
           quantity: item.people,
           id: item.packageId.toString(),
@@ -157,29 +161,29 @@ export async function POST(req: Request) {
         address1: billingInfo.direccion || 'Sin Especificar',
         postalCode: billingInfo.codigo_postal || '00000',
         state: billingInfo.estado || 'CDMX',
-        country: 'MX',
+        country: 'Mx', // Formato estricto de Octano
         ip: '127.0.0.1' 
       },
       cardData: {
         cardNumberToken: cardToken,
         cvv: cardInfo.cvv
       },
-      items: etominItems,
+      items: octanoItems,
       redirectUrl: 'https://rovia.com.mx' 
     };
 
-    const saleData = await safeEtominFetch(`${ETOMIN_BASE_URL}/sale`, {
+    const saleData = await safeOctanoFetch(`${OCTANO_BASE_URL}/sale`, {
       method: 'POST',
-      headers: getEtominHeaders({ 'Authorization': `Bearer ${authToken}` }),
+      headers: getOctanoHeaders({ 'Authorization': `Bearer ${authToken}` }),
       body: JSON.stringify(salePayload)
     }, 'Procesar Venta');
     
     if (saleData.status !== 'APPROVED' && saleData.status !== 'PENDING') {
-      console.error("❌ DETALLE DEL RECHAZO ETOMIN:", saleData); 
+      console.error("❌ DETALLE DEL RECHAZO OCTANO:", saleData); 
       throw new Error(`Pago declinado: ${saleData.message || saleData.responseCode || 'Tarjeta rechazada por el banco'}`);
     }
 
-    // 5. GUARDAR EN SUPABASE (EN TABLAS rovia)
+    // 5. GUARDAR EN SUPABASE
     const { data: customer, error: custError } = await supabase
       .from('customers_rovia')
       .upsert({ 
@@ -200,7 +204,7 @@ export async function POST(req: Request) {
         total_amount: finalAmountToCharge,
         payment_status: 'paid',
         transaction_id: saleData.transactionId || saleData.authorizationNumber || tempReferenceId,
-        payment_provider: 'etomin', 
+        payment_provider: 'octano', // Actualizado
         payment_date: new Date().toISOString(),
         pais: billingInfo.pais,
         direccion: billingInfo.direccion,
@@ -229,82 +233,88 @@ export async function POST(req: Request) {
       }   
     }
    
-    // 6. CORREOS ELECTRÓNICOS 
-    const primaryColor = '#FF6B6B'; // Coral Rovia
+    // 6. CORREOS ELECTRÓNICOS REDISEÑADOS (Rovia)
+    const primaryColor = '#E4007C'; // Rosa Mexicano
+    const bgDark = '#0a0a0a';
+    const bgLight = '#f9f9fb';
 
     const isEnglish = locale === 'en';
     const subjectClient = isEnglish 
-      ? `Purchase Confirmation - Thank you for traveling with Rovia!` 
-      : `Confirmación de Compra - ¡Gracias por viajar con Rovia!`;
+      ? `Boarding Pass - Thank you for traveling with Rovia!` 
+      : `Pase de Abordar - ¡Gracias por viajar con Rovia!`;
 
-    const greeting = isEnglish ? `Hello ${contactInfo.firstName}!` : `¡Hola ${contactInfo.firstName}!`;
-    const confirmationText = isEnglish ? "Your reservation is confirmed." : "Tu reservación ha sido confirmada.";
-    const totalLabel = isEnglish ? "TOTAL PAID:" : "TOTAL PAGADO:";
-    const quoteLabel = isEnglish ? "Quote Payment" : "Pago de Cotización";
+    const greeting = isEnglish ? `Hello ${contactInfo.firstName},` : `Hola ${contactInfo.firstName},`;
+    const confirmationText = isEnglish ? "Your adventure is officially confirmed. Get ready to experience the extraordinary." : "Tu aventura está oficialmente confirmada. Prepárate para vivir lo extraordinario.";
+    const totalLabel = isEnglish ? "Total Investment" : "Inversión Total";
+    const quoteLabel = isEnglish ? "Concierge Quote Payment" : "Pago de Cotización Concierge";
     const folioLabel = isEnglish ? "Folio" : "Folio";
-    const qtyLabel = isEnglish ? "Qty." : "Cant.";
-    const priceLabel = isEnglish ? "Price" : "Precio";
-    const experienceLabel = isEnglish ? "Experience" : "Experiencia";
-    const detailsLabel = isEnglish ? "Contact & Billing Details" : "Detalles de Contacto y Facturación";
+    const qtyLabel = isEnglish ? "Travelers" : "Viajeros";
+    const detailsLabel = isEnglish ? "Billing Information" : "Datos de Facturación";
     const phoneLabel = isEnglish ? "Phone:" : "Teléfono:";
     const addressLabel = isEnglish ? "Address:" : "Dirección:";
     const notesLabel = isEnglish ? "Notes:" : "Notas:";
+    const badgeText = isEnglish ? "OFFICIAL CONFIRMATION" : "CONFIRMACIÓN OFICIAL";
     
     const htmlClient = `
-        <div style="font-family: 'DM Sans', sans-serif; max-width: 600px; margin: auto; color: #1a1a1a; border: 1px solid #e5e5e5; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
-          <div style="background-color: #1a1a1a; padding: 40px 30px; text-align: center; border-bottom: 4px solid ${primaryColor};">
-            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">Rovia</h1>
-          </div>
-          <div style="padding: 40px 30px; background-color: #ffffff;">
-            <h2 style="color: #1a1a1a; margin-top: 0; font-size: 24px; font-weight: 800;">${greeting}</h2>
-            <p style="font-size: 16px; line-height: 1.6; color: #666666;">${confirmationText}</p>
-            
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px; margin-top: 30px;">
-              <thead>
-                <tr style="border-bottom: 2px solid #f5f5f5; text-align: left;">
-                  <th style="padding: 12px 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #999999;">${experienceLabel}</th>
-                  <th style="padding: 12px 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #999999; text-align: center;">${qtyLabel}</th>
-                  <th style="padding: 12px 0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #999999; text-align: right;">${priceLabel}</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${!manualFolioData ? cart.items.map((item: CartItem) => `
-                  <tr style="border-bottom: 1px solid #fafafa;">
-                    <td style="padding: 20px 0;">
-                      <p style="margin: 0; font-weight: 800; font-size: 16px; color: #1a1a1a;">${translateText(item.experience.title, locale)}</p>
-                      <p style="margin: 6px 0 0; font-size: 13px; color: #666666;">📅 ${item.date} <br>✨ ${translateText(item.levelName, locale)}</p>
-                    </td>
-                    <td style="padding: 20px 0; text-align: center; vertical-align: top; font-weight: 600; color: #444444;">${item.people}</td>
-                    <td style="padding: 20px 0; text-align: right; font-weight: 800; font-size: 15px; color: #1a1a1a; vertical-align: top;">${formatPrice(item.totalPrice)}</td>
-                  </tr>
-                `).join('') : `
-                   <tr style="border-bottom: 1px solid #fafafa;">
-                    <td style="padding: 20px 0;">
-                      <p style="margin: 0; font-weight: 800; font-size: 16px; color: #1a1a1a;">${quoteLabel}</p>
-                      <p style="margin: 6px 0 0; font-size: 13px; color: #666666;">${folioLabel}: ${manualFolioData.folio}</p>
-                    </td>
-                    <td style="padding: 20px 0; text-align: center; vertical-align: top; font-weight: 600;">1</td>
-                    <td style="padding: 20px 0; text-align: right; font-weight: 800; font-size: 15px; color: #1a1a1a; vertical-align: top;">${formatPrice(manualFolioData.amount)}</td>
-                  </tr>
-                `}
-              </tbody>
-            </table>
-
-            <div style="background-color: #fafafa; border-radius: 16px; padding: 25px; margin-bottom: 30px; text-align: right;">
-              <span style="font-size: 14px; font-weight: 800; color: #666666; text-transform: uppercase; letter-spacing: 1px;">${totalLabel} </span>
-              <span style="font-size: 28px; font-weight: 900; color: ${primaryColor}; display: block; margin-top: 5px;">${formattedTotal}</span>
-            </div>
-
-            <div style="padding: 25px; border-radius: 16px; border: 1px solid #e5e5e5;">
-              <h3 style="margin: 0 0 20px; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #1a1a1a;">${detailsLabel}</h3>
-              <p style="margin: 8px 0; font-size: 14px; color: #444444;"><strong>Email:</strong> ${contactInfo.email}</p>
-              <p style="margin: 8px 0; font-size: 14px; color: #444444;"><strong>${phoneLabel}</strong> ${contactInfo.phone}</p>
-              <p style="margin: 8px 0; font-size: 14px; color: #444444;"><strong>${addressLabel}</strong> ${billingInfo.direccion}, ${billingInfo.localidad}, ${billingInfo.estado}, ${billingInfo.codigo_postal}, ${billingInfo.pais}</p>
-              ${orderNotes ? `<p style="margin: 8px 0; font-size: 14px; color: #444444; border-top: 1px dashed #cccccc; padding-top: 10px; mt-2;"><strong>${notesLabel}</strong> ${orderNotes}</p>` : ''}
-            </div>
-
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: auto; background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);">
+        
+        <!-- Header Dark Premium -->
+        <div style="background-color: ${bgDark}; padding: 50px 30px; text-align: center;">
+          <h1 style="color: #ffffff; margin: 0; font-size: 36px; font-weight: 900; letter-spacing: -2px;">Rovia</h1>
+          <div style="margin-top: 16px; display: inline-block; background-color: rgba(228, 0, 124, 0.15); border: 1px solid rgba(228, 0, 124, 0.3); color: ${primaryColor}; padding: 6px 16px; border-radius: 9999px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">
+            ${badgeText}
           </div>
         </div>
+
+        <!-- Body -->
+        <div style="padding: 40px 30px;">
+          <h2 style="color: #111111; margin-top: 0; margin-bottom: 12px; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">${greeting}</h2>
+          <p style="font-size: 16px; line-height: 1.6; color: #555555; margin-top: 0; margin-bottom: 40px;">${confirmationText}</p>
+          
+          <!-- Itinerary Items -->
+          <div style="margin-bottom: 40px;">
+            ${!manualFolioData ? cart.items.map((item: CartItem) => `
+              <div style="background-color: ${bgLight}; border: 1px solid #eeeeee; border-radius: 20px; padding: 24px; margin-bottom: 16px;">
+                <div style="margin-bottom: 16px;">
+                  <h3 style="margin: 0 0 4px; font-size: 18px; font-weight: 800; color: #111111; letter-spacing: -0.5px;">${translateText(item.experience.title, locale)}</h3>
+                  <p style="margin: 0; font-size: 13px; font-weight: 600; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 1px;">${translateText(item.levelName, locale)}</p>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+                  <div style="background-color: #ffffff; padding: 8px 16px; border-radius: 12px; border: 1px solid #eeeeee;">
+                    <p style="margin: 0; font-size: 11px; font-weight: 800; color: #999999; text-transform: uppercase; letter-spacing: 1px;">FECHA</p>
+                    <p style="margin: 2px 0 0; font-size: 14px; font-weight: 700; color: #111111;">${item.date}</p>
+                  </div>
+                  <div style="background-color: #ffffff; padding: 8px 16px; border-radius: 12px; border: 1px solid #eeeeee;">
+                    <p style="margin: 0; font-size: 11px; font-weight: 800; color: #999999; text-transform: uppercase; letter-spacing: 1px;">${qtyLabel}</p>
+                    <p style="margin: 2px 0 0; font-size: 14px; font-weight: 700; color: #111111;">${item.people}</p>
+                  </div>
+                </div>
+              </div>
+            `).join('') : `
+              <div style="background-color: ${bgLight}; border: 1px solid #eeeeee; border-radius: 20px; padding: 24px; margin-bottom: 16px;">
+                <h3 style="margin: 0 0 4px; font-size: 18px; font-weight: 800; color: #111111; letter-spacing: -0.5px;">${quoteLabel}</h3>
+                <p style="margin: 0; font-size: 13px; font-weight: 600; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 1px;">${folioLabel}: ${manualFolioData.folio}</p>
+              </div>
+            `}
+          </div>
+
+          <!-- Total (Rosa Mexicano Accent) -->
+          <div style="background-color: ${bgDark}; border-radius: 24px; padding: 30px; text-align: center; margin-bottom: 40px;">
+            <p style="margin: 0; font-size: 12px; font-weight: 800; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 2px;">${totalLabel}</p>
+            <p style="margin: 8px 0 0; font-size: 40px; font-weight: 900; color: #ffffff; letter-spacing: -1px;">${formattedTotal}</p>
+          </div>
+
+          <!-- Billing Info -->
+          <div style="padding: 24px; border-radius: 24px; border: 1px solid #eeeeee;">
+            <h4 style="margin: 0 0 16px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #888888;">${detailsLabel}</h4>
+            <p style="margin: 0 0 8px; font-size: 14px; color: #444444;"><strong>Email:</strong> ${contactInfo.email}</p>
+            <p style="margin: 0 0 8px; font-size: 14px; color: #444444;"><strong>${phoneLabel}</strong> ${contactInfo.phone}</p>
+            <p style="margin: 0; font-size: 14px; color: #444444; line-height: 1.5;"><strong>${addressLabel}</strong> ${billingInfo.direccion}, ${billingInfo.localidad}, ${billingInfo.estado}, ${billingInfo.codigo_postal}, ${billingInfo.pais}</p>
+            ${orderNotes ? `<div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #eeeeee;"><p style="margin: 0; font-size: 14px; color: #444444; font-style: italic;"><strong>${notesLabel}</strong> ${orderNotes}</p></div>` : ''}
+          </div>
+
+        </div>
+      </div>
     `;
 
     await resend.emails.send({
@@ -315,28 +325,26 @@ export async function POST(req: Request) {
     });
 
     // --- NOTIFICACIÓN INTERNA PARA EL EQUIPO ---
-    const subjectInternal = `[NUEVA VENTA] - ${formattedTotal} - ${contactInfo.firstName} ${contactInfo.lastName}`;
+    const subjectInternal = `[ROVIA - NUEVO INGRESO] - ${formattedTotal} - ${contactInfo.firstName} ${contactInfo.lastName}`;
     
     const htmlInternal = `
-      <div style="font-family: sans-serif; color: #333;">
-        <h2 style="color: #FF6B6B;">¡Nueva Venta Registrada! (Vía Etomin)</h2>
-        <p>Se ha procesado un pago exitoso a través de la página web Rovia.</p>
-        <hr/>
-        <p><strong>Monto Total:</strong> ${formattedTotal}</p>
-        <p><strong>ID Transacción (Etomin):</strong> ${saleData.transactionId || saleData.authorizationNumber}</p>
-        <hr/>
-        <h3>Datos del Cliente:</h3>
+      <div style="font-family: -apple-system, sans-serif; color: #111; max-width: 600px; margin: auto; padding: 20px;">
+        <div style="background: #0a0a0a; color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px;">
+          <h2 style="margin: 0; color: #E4007C;">+ ${formattedTotal}</h2>
+          <p style="margin: 5px 0 0; opacity: 0.7; font-size: 12px;">Nueva Venta Vía OctanoPayments</p>
+        </div>
+        <p><strong>ID Octano:</strong> ${saleData.transactionId || saleData.authorizationNumber}</p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+        <h3>Cliente</h3>
         <p><strong>Nombre:</strong> ${contactInfo.firstName} ${contactInfo.lastName}</p>
         <p><strong>Email:</strong> ${contactInfo.email}</p>
         <p><strong>Teléfono:</strong> ${contactInfo.phone}</p>
-        <p><strong>Dirección:</strong> ${billingInfo.direccion}, ${billingInfo.localidad}, ${billingInfo.estado}, ${billingInfo.codigo_postal}</p>
-        <p><strong>Notas:</strong> ${orderNotes || 'Sin notas'}</p>
-        <hr/>
-        <h3>Detalle del Pedido:</h3>
-        <ul>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+        <h3>Resumen:</h3>
+        <ul style="background: #f9f9fb; padding: 20px 40px; border-radius: 12px;">
           ${!manualFolioData ? cart.items.map((item: CartItem) => `
-            <li>${item.experience.title} (x${item.people}) - ${formatPrice(item.totalPrice)}</li>
-          `).join('') : `<li>Pago Manual de Folio: ${manualFolioData.folio}</li>`}
+            <li style="margin-bottom: 10px;"><strong>${item.experience.title}</strong> (x${item.people}) - ${formatPrice(item.totalPrice)}</li>
+          `).join('') : `<li>Pago Manual de Folio: <strong>${manualFolioData.folio}</strong></li>`}
         </ul>
       </div>
     `;
@@ -359,3 +367,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, message: errorMessage }, { status: 400 });
   }
 }
+

@@ -67,10 +67,13 @@ function CheckoutContent() {
     e.preventDefault();
     setIsProcessing(true);
     try {
+      // Limpiamos los espacios del número de tarjeta antes de enviar a la API
+      const cleanCardInfo = { ...cardInfo, number: cardInfo.number.replace(/\s/g, '') };
+
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ locale, contactInfo, billingInfo, orderNotes: addNotes ? orderNotes : null, cart, cardInfo, formattedTotal: formatPrice(finalTotal), manualFolioData:null })
+        body: JSON.stringify({ locale, contactInfo, billingInfo, orderNotes: addNotes ? orderNotes : null, cart, cardInfo: cleanCardInfo, formattedTotal: formatPrice(finalTotal), manualFolioData:null })
       });
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || "Error procesando el pago");
@@ -87,8 +90,15 @@ function CheckoutContent() {
   const isFormValid = 
     contactInfo.firstName && contactInfo.email && contactInfo.phone &&
     billingInfo.pais && billingInfo.direccion && billingInfo.localidad && billingInfo.estado && billingInfo.codigo_postal &&
-    cardInfo.number.length >= 15 && cardInfo.name && cardInfo.expiry.length === 5 && cardInfo.cvv.length >= 3 &&
+    cardInfo.number.replace(/\s/g, '').length >= 15 && cardInfo.name && cardInfo.expiry.length === 5 && cardInfo.cvv.length >= 3 &&
     cart.items.length > 0;
+
+  // FORMATEO: Agregar espacio cada 4 dígitos
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, ''); // Solo números
+    const formattedVal = val.match(/.{1,4}/g)?.join(' ') || val; // Agrupar en bloques de 4
+    setCardInfo({ ...cardInfo, number: formattedVal });
+  };
 
   const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let val = e.target.value.replace(/\D/g, '');
@@ -97,19 +107,19 @@ function CheckoutContent() {
     setCardInfo({ ...cardInfo, expiry: val });
   };
 
-  // Clases actualizadas al look rovia
-  const inputClass = "h-14 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary rounded-xl px-5 font-bold text-foreground placeholder:text-muted-foreground placeholder:font-medium";
+  // Clases compactas y elegantes
+  const inputClass = "h-12 bg-card border-border focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary rounded-xl px-4 font-medium text-foreground placeholder:text-muted-foreground/60 shadow-sm transition-all";
 
   if (showSuccess) {
     return (
-      <main className="flex-1 pt-40 pb-24 flex items-center justify-center px-4">
-        <div className="max-w-lg w-full text-center bg-card rounded-[2.5rem] p-12 shadow-2xl border border-border">
-          <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-8">
-            <CheckCircle className="w-12 h-12 text-primary" />
+      <main className="flex-1 pt-32 pb-24 flex items-center justify-center px-4 bg-background">
+        <div className="max-w-md w-full text-center bg-card rounded-2xl p-10 shadow-xl border border-border">
+          <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10 text-primary" />
           </div>
-          <h1 className="text-4xl font-black tracking-tight mb-4 text-foreground"><T>¡Pago Exitoso!</T></h1>
-          <p className="text-muted-foreground font-medium mb-10 text-lg"><T>Tu transacción ha sido confirmada y tu aventura está lista.</T></p>
-          <Button asChild className="w-full bg-foreground hover:bg-primary text-background font-black rounded-2xl h-16 text-lg transition-colors">
+          <h1 className="text-3xl font-black tracking-tight mb-4 text-foreground"><T>¡Pago Exitoso!</T></h1>
+          <p className="text-muted-foreground font-medium mb-8"><T>Tu transacción ha sido confirmada. Los detalles se han enviado a tu correo.</T></p>
+          <Button asChild className="w-full bg-primary hover:bg-foreground text-white font-bold rounded-xl h-12 transition-all shadow-md">
             <Link href={`/${locale}/`}><T>Volver al Inicio</T></Link>
           </Button>
         </div>
@@ -119,135 +129,223 @@ function CheckoutContent() {
 
   return (
     <main className="flex-1 pt-32 pb-24 bg-background">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground"><T>Checkout</T></h1>
+      <div className="container mx-auto px-4 max-w-6xl">
+        
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-foreground"><T>Finalizar Compra</T></h1>
         </div>
 
-        <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-10 items-start">
+        <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 items-start">
           
-          <div className="lg:col-span-8 space-y-8">
+          {/* Columna Izquierda: Formularios */}
+          <div className="lg:col-span-7 xl:col-span-8 space-y-6">
+            
             {/* Panel Contacto */}
-            <div className="bg-card p-8 md:p-10 border border-border shadow-sm rounded-[2rem]">
-              <h2 className="text-2xl font-black mb-8 flex items-center gap-3 text-foreground tracking-tight">
-                <div className="p-2 bg-primary/10 rounded-lg"><User className="text-primary w-5 h-5"/></div>
+            <div className="bg-card p-6 md:p-8 border border-border shadow-sm rounded-2xl">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-3 text-foreground border-b border-border/50 pb-4">
+                <User className="text-primary w-5 h-5"/>
                 <T>Datos de Contacto</T>
               </h2>
-              <div className="grid sm:grid-cols-2 gap-5">
-                <Input value={contactInfo.firstName} onChange={(e)=>setContactInfo({...contactInfo, firstName:e.target.value})} placeholder={phNombre} required className={inputClass} />
-                <Input value={contactInfo.lastName} onChange={(e)=>setContactInfo({...contactInfo, lastName:e.target.value})} placeholder={phApellidos} className={inputClass} />
-                <Input type="email" value={contactInfo.email} onChange={(e)=>setContactInfo({...contactInfo, email:e.target.value})} placeholder={phEmail} required className={inputClass} />
-                <Input type="tel" value={contactInfo.phone} onChange={(e)=>setContactInfo({...contactInfo, phone:e.target.value})} placeholder={phTelefono} required className={inputClass} />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-muted-foreground ml-1"><T>Nombre</T></label>
+                  <Input value={contactInfo.firstName} onChange={(e)=>setContactInfo({...contactInfo, firstName:e.target.value})} placeholder={phNombre} required className={inputClass} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-muted-foreground ml-1"><T>Apellidos</T></label>
+                  <Input value={contactInfo.lastName} onChange={(e)=>setContactInfo({...contactInfo, lastName:e.target.value})} placeholder={phApellidos} className={inputClass} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-muted-foreground ml-1"><T>Correo Electrónico</T></label>
+                  <Input type="email" value={contactInfo.email} onChange={(e)=>setContactInfo({...contactInfo, email:e.target.value})} placeholder={phEmail} required className={inputClass} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-muted-foreground ml-1"><T>Teléfono</T></label>
+                  <Input type="tel" value={contactInfo.phone} onChange={(e)=>setContactInfo({...contactInfo, phone:e.target.value})} placeholder={phTelefono} required className={inputClass} />
+                </div>
               </div>
             </div>
               
             {/* Panel Facturación */}
-            <div className="bg-card p-8 md:p-10 border border-border shadow-sm rounded-[2rem]">
-              <h2 className="text-2xl font-black mb-8 flex items-center gap-3 text-foreground tracking-tight">
-                <div className="p-2 bg-primary/10 rounded-lg"><FileText className="text-primary w-5 h-5"/></div>
+            <div className="bg-card p-6 md:p-8 border border-border shadow-sm rounded-2xl">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-3 text-foreground border-b border-border/50 pb-4">
+                <FileText className="text-primary w-5 h-5"/>
                 <T>Dirección de Facturación</T>
               </h2>
-              <div className="grid sm:grid-cols-2 gap-5">
-                <Input placeholder={phPais} required value={billingInfo.pais} onChange={(e)=>setBillingInfo({...billingInfo, pais:e.target.value})} className={`sm:col-span-2 ${inputClass}`} />
-                <Input placeholder={phDireccion} required value={billingInfo.direccion} onChange={(e)=>setBillingInfo({...billingInfo, direccion:e.target.value})} className={`sm:col-span-2 ${inputClass}`} />
-                <Input placeholder={phLocalidad} required value={billingInfo.localidad} onChange={(e)=>setBillingInfo({...billingInfo, localidad:e.target.value})} className={inputClass} />
-                <Input placeholder={phEstado} required value={billingInfo.estado} onChange={(e)=>setBillingInfo({...billingInfo, estado:e.target.value})} className={inputClass} />
-                <Input placeholder={phCP} required value={billingInfo.codigo_postal} onChange={(e)=>setBillingInfo({...billingInfo, codigo_postal:e.target.value})} className={inputClass} />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="sm:col-span-2 space-y-1">
+                  <label className="text-xs font-bold text-muted-foreground ml-1"><T>País / Región</T></label>
+                  <Input placeholder={phPais} required value={billingInfo.pais} onChange={(e)=>setBillingInfo({...billingInfo, pais:e.target.value})} className={inputClass} />
+                </div>
+                <div className="sm:col-span-2 space-y-1">
+                  <label className="text-xs font-bold text-muted-foreground ml-1"><T>Dirección Completa</T></label>
+                  <Input placeholder={phDireccion} required value={billingInfo.direccion} onChange={(e)=>setBillingInfo({...billingInfo, direccion:e.target.value})} className={inputClass} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-muted-foreground ml-1"><T>Ciudad / Localidad</T></label>
+                  <Input placeholder={phLocalidad} required value={billingInfo.localidad} onChange={(e)=>setBillingInfo({...billingInfo, localidad:e.target.value})} className={inputClass} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-muted-foreground ml-1"><T>Estado / Región</T></label>
+                  <Input placeholder={phEstado} required value={billingInfo.estado} onChange={(e)=>setBillingInfo({...billingInfo, estado:e.target.value})} className={inputClass} />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-muted-foreground ml-1"><T>Código Postal</T></label>
+                  <Input placeholder={phCP} required value={billingInfo.codigo_postal} onChange={(e)=>setBillingInfo({...billingInfo, codigo_postal:e.target.value})} className={inputClass} />
+                </div>
               </div>
 
-              <div className="mt-10 pt-8 border-t border-border">
-                <label className="flex items-center gap-4 cursor-pointer text-foreground font-bold text-sm">
+              <div className="mt-6 pt-6 border-t border-border/50">
+                <label className="flex items-center gap-3 cursor-pointer text-foreground font-semibold text-sm select-none">
                   <div className="relative flex items-center">
-                    <input type="checkbox" checked={addNotes} onChange={(e)=>setAddNotes(e.target.checked)} className="peer w-5 h-5 cursor-pointer appearance-none rounded-md border-2 border-border checked:border-primary checked:bg-primary transition-all" />
+                    <input type="checkbox" checked={addNotes} onChange={(e)=>setAddNotes(e.target.checked)} className="peer w-5 h-5 cursor-pointer appearance-none rounded border-2 border-border checked:border-primary checked:bg-primary transition-all" />
                     <CheckCircle className="absolute w-3 h-3 text-white left-1 pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" />
                   </div>
-                  <T>Añadir nota al pedido (Opcional)</T>
+                  <T>Añadir indicaciones especiales al viaje</T>
                 </label>
                 
                 {addNotes && (
-                  <div className="mt-6 animate-fade-up">
+                  <div className="mt-4">
                     <Textarea 
                       placeholder={phNotas} value={orderNotes} onChange={(e) => setOrderNotes(e.target.value)}
-                      className="bg-background border border-border min-h-[120px] font-medium text-foreground focus-visible:ring-2 focus-visible:ring-primary rounded-xl px-5 py-4 resize-none"
+                      className="bg-background border-border min-h-[100px] text-sm text-foreground focus-visible:ring-1 focus-visible:ring-primary rounded-xl px-4 py-3 resize-none shadow-sm"
                     />
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Panel Pago (Look rovia Oscuro) */}
-            <div className="bg-foreground p-8 md:p-10 shadow-xl shadow-primary/10 rounded-[2rem] relative overflow-hidden text-background">
-              <div className="absolute -top-20 -right-20 p-6 opacity-[0.03] pointer-events-none">
-                <CreditCard className="w-[400px] h-[400px]" />
-              </div>
+            {/* Panel Pago (Oscuro y Nítido) */}
+            <div className="bg-zinc-950 p-6 md:p-8 shadow-xl rounded-2xl relative overflow-hidden border border-zinc-800">
               <div className="relative z-10">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
-                  <h2 className="text-2xl font-black flex items-center gap-3 tracking-tight">
-                    <div className="p-2 bg-primary/20 rounded-lg"><CreditCard className="text-primary w-5 h-5" /></div>
-                    <T>Método de Pago</T>
+                
+                {/* Cabecera Pago + Octano Logo */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-white/10 pb-6">
+                  <h2 className="text-xl font-bold flex items-center gap-3 text-white tracking-tight">
+                    <CreditCard className="text-primary w-5 h-5" />
+                    <T>Pago Seguro</T>
                   </h2>
-                  <div className="h-8 opacity-90 px-4 py-1.5 rounded-lg flex items-center">
-                     {/* Imagen Etomin Logo */}
-                     <img src="/etomin_logo.svg" alt="Powered by Etomin" className="h-full object-contain brightness-0 invert" />
+                  <div className="bg-white rounded-lg px-4 py-2 flex items-center justify-center shadow-inner h-12 w-fit">
+                     <img src="/logo-octano-2.png" alt="OctanoPayments" className="h-full object-contain" />
                   </div>
                 </div>
                   
-                <div className="grid gap-5 max-w-md">
-                  <Input placeholder={phTarjeta} required maxLength={19} value={cardInfo.number} onChange={(e)=>setCardInfo({...cardInfo, number: e.target.value.replace(/\D/g, '')})} className="bg-background/10 border-none h-14 font-mono text-lg tracking-widest focus-visible:ring-primary rounded-xl px-5 text-background placeholder:text-background/30" />
-                  <Input placeholder={phNombreTarjeta} required value={cardInfo.name} onChange={(e)=>setCardInfo({...cardInfo, name: e.target.value.toUpperCase()})} className="bg-background/10 border-none h-14 font-bold focus-visible:ring-primary rounded-xl px-5 text-background placeholder:text-background/30" />
-                  <div className="grid grid-cols-2 gap-5">
-                    <Input placeholder={phFecha} required maxLength={5} value={cardInfo.expiry} onChange={handleExpiryChange} className="bg-background/10 border-none h-14 font-bold text-center focus-visible:ring-primary rounded-xl text-background placeholder:text-background/30" />
-                    <Input placeholder={phCvv} type="password" required maxLength={4} value={cardInfo.cvv} onChange={(e)=>setCardInfo({...cardInfo, cvv: e.target.value.replace(/\D/g, '')})} className="bg-background/10 border-none h-14 font-mono text-center tracking-widest focus-visible:ring-primary rounded-xl text-background placeholder:text-background/30" />
+                {/* Inputs de Tarjeta */}
+                <div className="grid gap-4 max-w-lg">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-primary"><T>Número de Tarjeta</T></label>
+                    <Input 
+                      placeholder="0000 0000 0000 0000" 
+                      required 
+                      maxLength={19} 
+                      value={cardInfo.number} 
+                      onChange={handleCardNumberChange} 
+                      className="bg-white/5 border-white/10 h-12 font-mono text-base tracking-widest focus-visible:ring-primary rounded-xl px-4 text-white placeholder:text-white/30" 
+                    />
                   </div>
                   
-                  {/* Etomin Badge Seguridad */}
-                  <div className="flex flex-col sm:flex-row items-center gap-4 mt-6 justify-between border-t border-background/10 pt-6">
-                    <div className="flex items-center gap-3">
-                      <ShieldCheck className="w-6 h-6 text-primary shrink-0" />
-                      <p className="text-xs font-bold text-background/50 tracking-wide leading-tight"><T>Tus datos están protegidos y encriptados de extremo a extremo.</T></p>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-primary"><T>Nombre en la tarjeta</T></label>
+                    <Input 
+                      placeholder={phNombreTarjeta} 
+                      required 
+                      value={cardInfo.name} 
+                      onChange={(e)=>setCardInfo({...cardInfo, name: e.target.value.toUpperCase()})} 
+                      className="bg-white/5 border-white/10 h-12 font-medium text-base focus-visible:ring-primary rounded-xl px-4 text-white placeholder:text-white/30" 
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-primary"><T>Expiración</T></label>
+                      <Input 
+                        placeholder={phFecha} 
+                        required 
+                        maxLength={5} 
+                        value={cardInfo.expiry} 
+                        onChange={handleExpiryChange} 
+                        className="bg-white/5 border-white/10 h-12 font-medium text-base focus-visible:ring-primary rounded-xl px-4 text-white placeholder:text-white/30" 
+                      />
                     </div>
-                    <img src="/etomin_secbadge.svg" alt="Secure Payment Etomin" className="h-8 object-contain opacity-80" />
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold uppercase tracking-widest text-primary"><T>Código (CVV)</T></label>
+                      <Input 
+                        placeholder={phCvv} 
+                        type="password" 
+                        required 
+                        maxLength={4} 
+                        value={cardInfo.cvv} 
+                        onChange={(e)=>setCardInfo({...cardInfo, cvv: e.target.value.replace(/\D/g, '')})} 
+                        className="bg-white/5 border-white/10 h-12 font-mono text-base tracking-widest focus-visible:ring-primary rounded-xl px-4 text-white placeholder:text-white/30" 
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Badge Seguridad Ligero */}
+                  <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/10">
+                    <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
+                    <p className="text-xs font-medium text-white/50 leading-snug">
+                      <T>Procesado por OctanoPayments. Conexión cifrada de 256 bits.</T>
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
             
-          <div className="lg:col-span-4">
-            <div className="bg-card p-8 lg:p-10 sticky top-32 border border-border shadow-xl rounded-[2.5rem]">
-              <h2 className="text-xl font-black mb-8 text-foreground border-b border-border pb-6 tracking-tight"><T>Resumen de Compra</T></h2>
+          {/* Columna Derecha: Resumen Sticky */}
+          <div className="lg:col-span-5 xl:col-span-4">
+            <div className="bg-card p-6 md:p-8 lg:sticky lg:top-32 border border-border shadow-md rounded-2xl">
+              <h2 className="text-xl font-bold mb-6 text-foreground border-b border-border/50 pb-4 tracking-tight"><T>Resumen de Compra</T></h2>
               
-              <div className="space-y-6 mb-10">
+              <div className="space-y-4 mb-8">
                 {cart.items.length === 0 ? (
-                  <p className="text-muted-foreground font-medium"><T>Tu carrito está vacío.</T></p>
+                  <p className="text-muted-foreground font-medium text-sm"><T>Tu carrito está vacío.</T></p>
                 ) : (
                   cart.items.map((item, index) => (
-                    <div key={index} className="flex justify-between text-sm items-start gap-4">
-                      <span className="text-muted-foreground font-medium leading-relaxed">
-                        <T>{item.experience.title}</T> <span className="font-black text-foreground block mt-1">x{item.people} <T>personas</T></span>
-                      </span>
-                      <span className="font-black text-foreground">{formatPrice(item.totalPrice)}</span>
+                    <div key={index} className="flex justify-between items-start gap-4 pb-4 border-b border-border/30 last:border-0 last:pb-0">
+                      <div>
+                        <span className="text-foreground font-bold text-sm block mb-1">
+                          <T>{item.experience.title}</T>
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                          x{item.people} <T>Viajeros</T>
+                        </span>
+                      </div>
+                      <span className="font-bold text-sm text-foreground whitespace-nowrap">{formatPrice(item.totalPrice)}</span>
                     </div>
                   ))
                 )}
               </div>
 
-              <div className="border-t border-border pt-8">
-                <div className="flex justify-between items-end mb-8">
-                  <span className="text-muted-foreground font-black uppercase tracking-widest text-sm"><T>Total</T></span>
+              <div className="bg-background rounded-xl p-5 border border-border/50 mb-6">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-muted-foreground font-bold text-xs"><T>Subtotal</T></span>
+                  <span className="font-semibold text-sm text-foreground">{formatPrice(finalTotal)}</span>
+                </div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-muted-foreground font-bold text-xs"><T>Impuestos</T></span>
+                  <span className="font-semibold text-sm text-foreground">Incluidos</span>
+                </div>
+                <div className="flex justify-between items-end border-t border-border/50 pt-4">
+                  <span className="text-foreground font-bold text-sm uppercase tracking-wider"><T>Total General</T></span>
                   <div className="text-right">
-                    <div className="text-3xl font-black text-primary">{formatPrice(finalTotal)}</div>
-                    <div className="text-xs font-bold text-muted-foreground mt-1 uppercase tracking-widest"><T>IVA incluido</T></div>
+                    <div className="text-2xl font-black text-primary tracking-tight">{formatPrice(finalTotal)}</div>
                   </div>
                 </div>
-                
-                <Button type="submit" disabled={!isFormValid || isProcessing} className="w-full bg-primary hover:bg-foreground text-white font-black h-16 rounded-2xl shadow-[0_10px_30px_rgba(255,107,107,0.3)] transition-all text-lg group">
-                  {isProcessing ? <Loader2 className="animate-spin w-5 h-5 mr-3" /> : <Lock className="w-5 h-5 mr-3" />}
-                  {isProcessing ? textProcesando : `${textPagar} ${formatPrice(finalTotal)}`}
-                </Button>
               </div>
+                
+              <Button 
+                type="submit" 
+                disabled={!isFormValid || isProcessing} 
+                className="w-full bg-primary hover:bg-foreground text-white font-bold h-14 rounded-xl shadow-md hover:shadow-lg transition-all text-base group disabled:opacity-50 disabled:shadow-none"
+              >
+                {isProcessing ? <Loader2 className="animate-spin w-5 h-5 mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
+                {isProcessing ? textProcesando : <T>Completar Reserva</T>}
+              </Button>
             </div>
           </div>
+
         </form>
       </div>
     </main>
@@ -256,7 +354,7 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background selection:bg-primary selection:text-white">
       <Header />
       <Suspense fallback={
         <div className="flex-1 flex items-center justify-center">
