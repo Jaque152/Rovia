@@ -1,88 +1,64 @@
 "use client";
 import { T } from "@/components/T";
 import { Button } from "@/components/ui/button";
-import { Globe2, Compass, ArrowRight, MapPin } from "lucide-react";
+import { Compass, MapPin, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useLocale } from 'next-intl';
 
 export function Hero() {
   const locale = useLocale();
   return (
-    <section className="relative min-h-screen flex items-center pt-24 pb-20 overflow-hidden bg-background">
-      {/* Fondo texturizado cálido */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#fca31110_1px,transparent_1px),linear-gradient(to_bottom,#fca31110_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
-      
-      {/* Orbes de luz animados en el fondo */}
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-pulse pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-secondary/20 rounded-full blur-[80px] animate-pulse delay-1000 pointer-events-none" />
+    <section className="relative min-h-screen flex flex-col items-center justify-center pt-48 pb-24 overflow-hidden bg-background">
+      {/* Brillo Rosa ambiental */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/10 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          
-          {/* Lado Izquierdo: Tipografía y Acción */}
-          <div className="flex flex-col items-start text-left space-y-8 animate-fade-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border rounded-full shadow-sm">
-              <Compass className="w-4 h-4 text-secondary animate-spin-slow" />
-              <span className="text-xs font-bold text-foreground tracking-widest uppercase">
-                <T>Redefiniendo el viaje</T>
-              </span>
-            </div>
-
-            <h1 className="text-6xl md:text-7xl lg:text-[6rem] font-black leading-[0.95] tracking-tighter text-foreground">
-              <T>Despierta tu</T>
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                <T>Aventura</T>
-              </span>
-            </h1>
-
-            <p className="text-lg md:text-xl font-medium text-muted-foreground max-w-lg leading-relaxed">
-              <T>Rutas vibrantes y logística impecable para sumergirte en los lugares más asombrosos de México. Tú eliges el destino, nosotros trazamos el mapa.</T>
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 w-full sm:w-auto">
-              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 rounded-full border-2 border-border bg-card/50 backdrop-blur-md font-bold text-lg hover:bg-foreground hover:text-background transition-all">
-                <Link href={`/${locale}/#contacto`}>
-                  <Globe2 className="w-5 h-5 mr-2" />
-                  <T>Hablar con un experto</T>
-                </Link>
-              </Button>
-            </div>
-          </div>
-
-          {/* Lado Derecho: Collage Dinámico Interactivo */}
-          <div className="relative h-[500px] md:h-[600px] w-full hidden md:block animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            
-            {/* Imagen Principal Central */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2/3 h-3/4 rounded-[2.5rem] overflow-hidden shadow-2xl z-10 group transition-transform duration-700 hover:scale-105">
-              <img src="https://images.pexels.com/photos/12665188/pexels-photo-12665188.jpeg" alt="Destino principal" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-transparent" />
-            </div>
-
-            {/* Imagen Flotante Superior Izquierda */}
-            <div className="absolute top-0 left-0 w-2/5 h-2/5 rounded-[2rem] overflow-hidden shadow-xl z-20 -rotate-6 animate-[bounce_4s_infinite_alternate] group">
-              <img src="https://images.pexels.com/photos/30746580/pexels-photo-30746580.jpeg" alt="Aventura" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-            </div>
-
-            {/* Imagen Flotante Inferior Derecha */}
-            <div className="absolute bottom-0 right-0 w-2/5 h-2/5 rounded-[2rem] overflow-hidden shadow-xl z-20 rotate-6 animate-[bounce_5s_infinite_alternate-reverse] group">
-              <img src="https://images.pexels.com/photos/22912077/pexels-photo-22912077.jpeg" alt="Relax" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-            </div>
-
-            {/* Tarjeta Glassmorphism de Destino */}
-            <div className="absolute bottom-1/4 -left-8 z-30 glass-panel px-5 py-4 rounded-2xl flex items-center gap-4 animate-[bounce_6s_infinite_alternate]">
-              <div className="w-12 h-12 rounded-full bg-secondary text-foreground flex items-center justify-center">
-                <MapPin className="w-6 h-6" />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-foreground/60 uppercase"><T>Siguiente Parada</T></p>
-                
-              </div>
-            </div>
-
-          </div>
-
+      <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center animate-fade-up">
+        
+        <div className="inline-flex items-center gap-3 px-6 py-3 bg-card border border-border rounded-full shadow-sm mb-10">
+          <Sparkles className="w-4 h-4 text-primary" />
+          <span className="text-xs font-black text-foreground tracking-widest uppercase">
+            <T>Evolucionando la forma de viajar</T>
+          </span>
         </div>
+
+        <h1 className="text-6xl md:text-8xl lg:text-[8rem] font-black leading-[0.9] text-foreground max-w-5xl mb-8 tracking-tighter">
+          <T>Desata tu</T>{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+            <T>Instinto</T>
+          </span>
+        </h1>
+
+        <p className="text-lg md:text-2xl font-medium text-muted-foreground max-w-3xl leading-relaxed mb-12">
+          <T>Creamos experiencias inmersivas con una planificación detallada. Tú decides a dónde ir, nosotros nos encargamos de que sea inolvidable.</T>
+        </p>
+
+        <Button asChild size="lg" className="h-16 px-12 rounded-full bg-foreground text-background font-black text-lg hover:bg-primary transition-all shadow-2xl hover:shadow-primary/30 hover:-translate-y-1">
+          <Link href={`/${locale}/#contacto`}>
+            <Compass className="w-6 h-6 mr-3 animate-pulse" />
+            <T>Diseñar mi viaje</T>
+          </Link>
+        </Button>
+
+        {/* Mosaico Cinemático Rediseñado */}
+        <div className="w-full max-w-6xl mt-24 h-[500px] md:h-[650px] rounded-[3rem] overflow-hidden relative shadow-2xl group border-4 border-background">
+          <img 
+            src="https://images.pexels.com/photos/12665188/pexels-photo-12665188.jpeg" 
+            alt="Hero Visual" 
+            className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-105" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
+          
+          <div className="absolute bottom-10 left-10 glass-panel px-8 py-5 rounded-[2rem] flex items-center gap-5 backdrop-blur-3xl">
+            <div className="w-14 h-14 rounded-full bg-primary text-white flex items-center justify-center">
+              <MapPin className="w-6 h-6" />
+            </div>
+            <div className="text-left text-white">
+              <p className="text-xs font-bold uppercase tracking-widest text-white/70 mb-1"><T>Próximo Destino</T></p>
+              <p className="text-xl font-black"><T>Descubre la magia</T></p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );

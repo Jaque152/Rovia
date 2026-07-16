@@ -19,7 +19,7 @@ const getEtominHeaders = (extraHeaders = {}) => ({
   'Content-Type': 'application/json',
   'Accept': 'application/json',
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Origin': 'https://tripnova.com', 
+  'Origin': 'https://rovia.com.mx', 
   ...extraHeaders
 });
 
@@ -165,7 +165,7 @@ export async function POST(req: Request) {
         cvv: cardInfo.cvv
       },
       items: etominItems,
-      redirectUrl: 'https://tripnova.com' 
+      redirectUrl: 'https://rovia.com.mx' 
     };
 
     const saleData = await safeEtominFetch(`${ETOMIN_BASE_URL}/sale`, {
@@ -179,9 +179,9 @@ export async function POST(req: Request) {
       throw new Error(`Pago declinado: ${saleData.message || saleData.responseCode || 'Tarjeta rechazada por el banco'}`);
     }
 
-    // 5. GUARDAR EN SUPABASE (EN TABLAS TRIPNOVA)
+    // 5. GUARDAR EN SUPABASE (EN TABLAS rovia)
     const { data: customer, error: custError } = await supabase
-      .from('customers_tripnova')
+      .from('customers_rovia')
       .upsert({ 
         first_name: contactInfo.firstName, 
         last_name: contactInfo.lastName, 
@@ -193,7 +193,7 @@ export async function POST(req: Request) {
     if (custError) throw new Error("Error guardando cliente en la base de datos.");
 
     const { data: booking, error: bookError } = await supabase
-      .from('bookings_tripnova')
+      .from('bookings_rovia')
       .insert({
         customer_id: customer.id,
         session_id: manualFolioData ? manualFolioData.folio : null,
@@ -224,18 +224,18 @@ export async function POST(req: Request) {
           unit_price: item.pricePerPerson
         }));
       if (validBookingItems.length > 0) {
-        const { error: itemsError } = await supabase.from('booking_items_tripnova').insert(validBookingItems);
+        const { error: itemsError } = await supabase.from('booking_items_rovia').insert(validBookingItems);
         if (itemsError) throw new Error("Error guardando items de reserva en la BD.");
       }   
     }
    
     // 6. CORREOS ELECTRÓNICOS 
-    const primaryColor = '#FF6B6B'; // Coral Tripnova
+    const primaryColor = '#FF6B6B'; // Coral Rovia
 
     const isEnglish = locale === 'en';
     const subjectClient = isEnglish 
-      ? `Purchase Confirmation - Thank you for traveling with Tripnova!` 
-      : `Confirmación de Compra - ¡Gracias por viajar con Tripnova!`;
+      ? `Purchase Confirmation - Thank you for traveling with Rovia!` 
+      : `Confirmación de Compra - ¡Gracias por viajar con Rovia!`;
 
     const greeting = isEnglish ? `Hello ${contactInfo.firstName}!` : `¡Hola ${contactInfo.firstName}!`;
     const confirmationText = isEnglish ? "Your reservation is confirmed." : "Tu reservación ha sido confirmada.";
@@ -253,7 +253,7 @@ export async function POST(req: Request) {
     const htmlClient = `
         <div style="font-family: 'DM Sans', sans-serif; max-width: 600px; margin: auto; color: #1a1a1a; border: 1px solid #e5e5e5; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
           <div style="background-color: #1a1a1a; padding: 40px 30px; text-align: center; border-bottom: 4px solid ${primaryColor};">
-            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">TRIPNOVA</h1>
+            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">Rovia</h1>
           </div>
           <div style="padding: 40px 30px; background-color: #ffffff;">
             <h2 style="color: #1a1a1a; margin-top: 0; font-size: 24px; font-weight: 800;">${greeting}</h2>
@@ -308,7 +308,7 @@ export async function POST(req: Request) {
     `;
 
     await resend.emails.send({
-      from: 'Tripnova <info@tripnova.com.mx>', 
+      from: 'Rovia <info@rovia.com.mx>', 
       to: [contactInfo.email], 
       subject: subjectClient,
       html: htmlClient,
@@ -320,7 +320,7 @@ export async function POST(req: Request) {
     const htmlInternal = `
       <div style="font-family: sans-serif; color: #333;">
         <h2 style="color: #FF6B6B;">¡Nueva Venta Registrada! (Vía Etomin)</h2>
-        <p>Se ha procesado un pago exitoso a través de la página web Tripnova.</p>
+        <p>Se ha procesado un pago exitoso a través de la página web Rovia.</p>
         <hr/>
         <p><strong>Monto Total:</strong> ${formattedTotal}</p>
         <p><strong>ID Transacción (Etomin):</strong> ${saleData.transactionId || saleData.authorizationNumber}</p>
@@ -342,8 +342,8 @@ export async function POST(req: Request) {
     `;
 
     await resend.emails.send({
-      from: 'Sistema Tripnova <info@tripnova.com.mx>',
-      to: ['info@tripnova.com.mx'],
+      from: 'Sistema Rovia <info@rovia.com.mx>',
+      to: ['info@rovia.com.mx'],
       subject: subjectInternal,
       html: htmlInternal,
     });

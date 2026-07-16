@@ -1,4 +1,4 @@
-# Tripnova - Plataforma Transaccional
+# Rovia - Plataforma Transaccional
 
 
 ## Rutas del Proyecto

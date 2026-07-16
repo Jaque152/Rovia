@@ -8,9 +8,9 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { useCart } from "@/context/CartContext";
 
 const navLinks = [
-  { href: "/", label: <T>Inicio</T> },
-  { href: "/experiencias", label: <T>Experiencias</T> }, 
-  { href: "/#contacto", label: <T>Contacto</T> },
+  { href: "/", label: <T>Portada</T> },
+  { href: "/experiencias", label: <T>Explora</T> }, 
+  { href: "/#contacto", label: <T>Atención</T> },
 ];
 
 export function Header() {
@@ -21,44 +21,49 @@ export function Header() {
   const { cart, getItemCount } = useCart();
   const itemCount = getItemCount();
 
-  // Smart scroll: Oculta los botones suavemente al bajar, los muestra al subir
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
+      if (currentScrollY > lastScrollY && currentScrollY > 100) setIsVisible(false);
+      else setIsVisible(true);
       setLastScrollY(currentScrollY);
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", minimumFractionDigits: 0 }).format(price);
-  };
+  const formatPrice = (price: number) => new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN", minimumFractionDigits: 0 }).format(price);
 
   return (
-    <>
-      {/* Esquina Superior Izquierda: Logo Flotante */}
-      <div className={`fixed top-6 left-6 z-50 transition-all duration-500 ease-in-out ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'}`}>
-        <Link href={`/${locale}/`} className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-full text-white shadow-[0_8px_30px_rgb(0,0,0,0.15)] hover:scale-110 transition-transform duration-300">
-          <Compass className="w-8 h-8" />
-        </Link>
-      </div>
+    <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between w-[95%] max-w-4xl bg-background/80 backdrop-blur-2xl border border-border/50 rounded-full px-5 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-500 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-24 opacity-0'}`}>
+      
+      {/* Marca Rovia */}
+      <Link href={`/${locale}/`} className="flex items-center gap-3 group">
+        <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white transition-transform group-hover:scale-110 shadow-lg shadow-primary/30">
+          <Compass className="w-5 h-5" />
+        </div>
+        <span className="text-2xl font-black tracking-tighter text-foreground">Rovia</span>
+      </Link>
 
-      {/* Esquina Superior Derecha: Botonera Flotante (Cart + Menu) */}
-      <div className={`fixed top-6 right-6 z-50 flex items-center gap-4 transition-all duration-500 ease-in-out ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'}`}>
-        
-        {/* Hover Dropdown: Carrito */}
+      {/* Navegación Desktop */}
+      <nav className="hidden md:flex items-center gap-8">
+        {navLinks.map((link) => {
+          const href = link.href.startsWith("/#") ? `/${locale}${link.href.replace('/#', '#')}` : `/${locale}${link.href}`;
+          return (
+            <Link key={link.href} href={href} className="text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
+              {link.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Controles: Carrito + Menú Mobile */}
+      <div className="flex items-center gap-3">
         <div className="relative" onMouseEnter={() => setShowMiniCart(true)} onMouseLeave={() => setShowMiniCart(false)}>
-          <Link href={`/${locale}/carrito`} className="flex items-center justify-center w-14 h-14 rounded-full bg-card/80 backdrop-blur-xl border border-border shadow-lg hover:border-primary transition-all relative">
-            <ShoppingCart className="w-6 h-6 text-foreground" />
+          <Link href={`/${locale}/carrito`} className="flex items-center justify-center w-12 h-12 rounded-full bg-foreground/5 hover:bg-primary hover:text-white transition-all text-foreground relative">
+            <ShoppingCart className="w-5 h-5" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-6 h-6 bg-secondary text-foreground text-[11px] rounded-full flex items-center justify-center font-black shadow-sm">
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-[10px] rounded-full flex items-center justify-center font-black border-2 border-background shadow-sm">
                 {itemCount}
               </span>
             )}
@@ -66,38 +71,28 @@ export function Header() {
 
           {/* Mini Cart Popover */}
           {showMiniCart && (
-            <div className="absolute right-0 top-full mt-4 w-80 glass-panel rounded-3xl overflow-hidden z-50 border border-border shadow-2xl">
-              <div className="p-5 border-b border-border/30 bg-card/90">
-                <h3 className="font-bold text-sm tracking-tight"><T>Tu Itinerario</T></h3>
-              </div>
+            <div className="absolute right-0 top-full mt-4 w-[340px] bg-background/95 backdrop-blur-3xl rounded-[2rem] overflow-hidden z-50 border border-border shadow-2xl">
+              <div className="p-6 border-b border-border/40"><h3 className="font-bold text-sm tracking-widest uppercase text-muted-foreground"><T>Bolsa de Viaje</T></h3></div>
               {cart.items.length === 0 ? (
-                <div className="p-8 text-center text-sm font-medium text-muted-foreground flex flex-col items-center gap-3 bg-card/50">
-                  <ShoppingCart className="w-8 h-8 opacity-20" />
-                  <T>Aún no hay aventuras</T>
-                </div>
+                <div className="p-10 text-center text-sm font-medium text-muted-foreground flex flex-col items-center gap-4"><ShoppingCart className="w-10 h-10 opacity-20" /><T>Tu lista está vacía</T></div>
               ) : (
                 <>
-                  <div className="max-h-64 overflow-y-auto p-3 bg-card/50">
-                    {cart.items.slice(0, 3).map((item) => {
-                      const miniImage = item.experience.images && item.experience.images.length > 0 ? item.experience.images[0] : '/placeholder.jpg';
-                      return (
-                        <div key={`${item.packageId}-${item.date}`} className="p-3 mb-2 bg-background rounded-2xl border border-border hover:border-primary/50 transition-colors">
-                          <div className="flex gap-4 items-center">
-                            <img src={miniImage} className="w-14 h-14 rounded-xl object-cover" alt={item.experience.title} />
-                            <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-bold truncate"><T>{item.experience.title}</T></h4>
-                              <p className="text-xs font-medium text-muted-foreground mb-1">{item.people}p • <T>{item.levelName}</T></p>
-                              <p className="text-sm font-black text-primary">{formatPrice(item.totalPrice)}</p>
-                            </div>
+                  <div className="max-h-64 overflow-y-auto p-4 space-y-3">
+                    {cart.items.slice(0, 3).map((item) => (
+                      <div key={`${item.packageId}-${item.date}`} className="p-3 bg-card rounded-2xl border border-border/50">
+                        <div className="flex gap-4 items-center">
+                          <img src={item.experience.images?.[0] || '/placeholder.jpg'} className="w-16 h-16 rounded-[1rem] object-cover" alt="" />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-bold truncate"><T>{item.experience.title}</T></h4>
+                            <p className="text-xs font-medium text-muted-foreground mt-1">{item.people}p • <T>{item.levelName}</T></p>
+                            <p className="text-sm font-black text-primary mt-1">{formatPrice(item.totalPrice)}</p>
                           </div>
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
-                  <div className="p-4 bg-background">
-                    <Link href={`/${locale}/carrito`} className="block w-full py-3 bg-foreground text-background hover:bg-primary transition-colors text-center rounded-xl text-sm font-bold shadow-lg">
-                      <T>Ver Resumen</T>
-                    </Link>
+                  <div className="p-4 bg-card/50 border-t border-border/40">
+                    <Link href={`/${locale}/carrito`} className="block w-full py-4 bg-foreground text-background hover:bg-primary transition-all text-center rounded-2xl text-sm font-bold shadow-lg"><T>Ir al Pago</T></Link>
                   </div>
                 </>
               )}
@@ -105,44 +100,27 @@ export function Header() {
           )}
         </div>
 
-        {/* Sheet: Menú Desplegable */}
         <Sheet>
           <SheetTrigger asChild>
-            <button className="flex items-center justify-center w-14 h-14 rounded-full bg-foreground text-background shadow-lg hover:scale-105 hover:bg-primary hover:text-white transition-all">
-              <Menu className="w-6 h-6" />
+            <button className="md:hidden flex items-center justify-center w-12 h-12 rounded-full bg-foreground text-background hover:bg-primary transition-all shadow-md">
+              <Menu className="w-5 h-5" />
             </button>
           </SheetTrigger>
-          <SheetContent side="right" className="rounded-l-[2rem] border-l-0 bg-background/95 backdrop-blur-2xl">
-            <SheetTitle className="sr-only"><T>Menú de navegación</T></SheetTitle>
+          <SheetContent side="right" className="rounded-l-[3rem] border-l-0 bg-background/95 backdrop-blur-3xl">
+            <SheetTitle className="sr-only"><T>Opciones de Rovia</T></SheetTitle>
             <div className="flex flex-col gap-10 mt-24 px-6">
               {navLinks.map((link) => {
-                // Validación para construir correctamente los enlaces con anclas
-                const href = link.href.startsWith("/#") 
-                  ? `/${locale}${link.href.replace('/#', '#')}` 
-                  : `/${locale}${link.href}`;
-
-                return (
-                  <Link 
-                    key={link.href} 
-                    href={href} 
-                    className="text-5xl font-black text-foreground hover:text-primary transition-colors tracking-tighter"
-                  >
-                    {link.label}
-                  </Link>
-                );
+                const href = link.href.startsWith("/#") ? `/${locale}${link.href.replace('/#', '#')}` : `/${locale}${link.href}`;
+                return <Link key={link.href} href={href} className="text-5xl font-black text-foreground hover:text-primary transition-colors tracking-tighter">{link.label}</Link>;
               })}
             </div>
-            
-            {/* Info extra dentro del menú */}
-            <div className="absolute bottom-12 left-10 right-10">
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4"><T>Contacto Rápido</T></p>
-              <a href="mailto:soporte@tripnova.com" className="block text-lg font-bold text-foreground hover:text-primary mb-2">soporte@tripnova.com</a>
-              <p className="text-sm font-medium text-muted-foreground">Ciudad de México, MX</p>
+            <div className="absolute bottom-12 left-12">
+              <p className="text-xs font-bold text-primary uppercase tracking-widest mb-3"><T>Conecta con Rovia</T></p>
+              <a href="mailto:info@rovia.com.mx" className="block text-xl font-bold text-foreground hover:opacity-70 transition-opacity">info@rovia.com.mx</a>
             </div>
           </SheetContent>
         </Sheet>
-        
       </div>
-    </>
+    </div>
   );
 }

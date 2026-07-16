@@ -64,7 +64,7 @@ export default function PagoFolioPage() {
     };
 
     addToCart(customExperienceItem);
-    sessionStorage.setItem("tripnova_temp_contact", JSON.stringify({ nombre, email, folio })); 
+    sessionStorage.setItem("rovia_temp_contact", JSON.stringify({ nombre, email, folio })); 
     router.push(`/${locale}/carrito`);
   };
 
@@ -72,7 +72,7 @@ export default function PagoFolioPage() {
   minDate.setDate(minDate.getDate() + 1);
   const minDateStr = minDate.toISOString().split("T")[0];
 
-  // Tripnova Style Inputs
+  // rovia Style Inputs
   const inputClass = "h-14 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary rounded-xl px-5 font-bold text-foreground placeholder:text-muted-foreground placeholder:font-medium w-full";
   const labelClass = "text-xs font-black uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2 ml-1";
 
@@ -87,7 +87,7 @@ export default function PagoFolioPage() {
             <img 
               src="https://images.pexels.com/photos/7709272/pexels-photo-7709272.jpeg" 
               className="w-full h-full object-cover" 
-              alt="Tripnova Experiencia" 
+              alt="Rovia Experiencia" 
             />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/80 to-transparent"></div>
           </div>
@@ -102,7 +102,7 @@ export default function PagoFolioPage() {
               <T>Pago de</T> <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-primary"><T>Folio</T></span>
             </h1>
             <p className="text-lg text-background/60 font-medium max-w-2xl mx-auto">
-              <T>Procesamiento seguro para itinerarios a la medida y servicios exclusivos de Tripnova. Ingresa los detalles de tu folio para proceder al checkout.</T>
+              <T>Procesamiento seguro para itinerarios a la medida y servicios exclusivos de Rovia. Ingresa los detalles de tu folio para proceder al checkout.</T>
             </p>
           </div>
         </section>

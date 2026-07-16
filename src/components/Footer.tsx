@@ -4,8 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTransition } from "react";
 import Link from "next/link";
 import { T } from "@/components/T";
-import { Compass, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Compass, Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
   const locale = useLocale();
@@ -18,68 +17,61 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-foreground text-background pt-20 pb-10 mt-12 rounded-t-[2.5rem] lg:rounded-t-[4rem] px-4 lg:px-8">
-      <div className="container mx-auto">
-
-        {/* Grid de Contenido Principal */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+    <footer className="bg-foreground text-background pt-24 pb-12 mt-16 rounded-t-[4rem] lg:rounded-t-[6rem] px-6 lg:px-12 relative overflow-hidden">
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[150px] pointer-events-none" />
+      
+      <div className="container mx-auto relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
           
-          {/* Columna 1: Marca */}
-          <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
-                <Compass className="w-6 h-6" />
+          <div className="space-y-8 lg:col-span-1">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+                <Compass className="w-7 h-7" />
               </div>
-              <span className="text-2xl font-black tracking-tight">Tripnova</span>
+              <span className="text-4xl font-black tracking-tighter">Rovia</span>
             </div>
-            <p className="text-background/60 text-sm leading-relaxed font-medium">
-              <T>Trazando el nuevo horizonte de la exploración en México. Rutas únicas, logística perfecta.</T>
+            <p className="text-background/70 text-base leading-relaxed font-medium">
+              <T>Abriendo nuevas fronteras para descubrir México. Experiencias inigualables, ejecución impecable.</T>
             </p>
-            <div className="flex bg-background/10 rounded-full p-1 w-fit">
-              <button onClick={() => handleLang('es')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${locale === 'es' ? 'bg-white text-foreground' : 'text-background/60 hover:text-white'}`}>ES</button>
-              <button onClick={() => handleLang('en')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${locale === 'en' ? 'bg-white text-foreground' : 'text-background/60 hover:text-white'}`}>EN</button>
+            <div className="flex bg-background/10 rounded-full p-1.5 w-fit border border-white/5">
+              <button onClick={() => handleLang('es')} className={`px-6 py-2 rounded-full text-sm font-black transition-all ${locale === 'es' ? 'bg-white text-foreground shadow-sm' : 'text-background/60 hover:text-white'}`}>ES</button>
+              <button onClick={() => handleLang('en')} className={`px-6 py-2 rounded-full text-sm font-black transition-all ${locale === 'en' ? 'bg-white text-foreground shadow-sm' : 'text-background/60 hover:text-white'}`}>EN</button>
             </div>
           </div>
 
-          {/* Columna 2: Navegación */}
           <div>
-            <h4 className="font-bold mb-6 text-white uppercase tracking-widest text-xs"><T>Explorar</T></h4>
-            <ul className="space-y-4 text-sm font-medium text-background/60">
-              <li><Link href={`/${locale}/`} className="hover:text-primary transition-colors"><T>Inicio</T></Link></li>
-              <li><Link href={`/${locale}/experiencias`} className="hover:text-primary transition-colors"><T>Experiencias</T></Link></li>
-              <li><Link href={`/${locale}/#precios`} className="hover:text-primary transition-colors"><T>Precios</T></Link></li>
+            <h4 className="font-black mb-8 text-primary uppercase tracking-widest text-sm"><T>Navegación</T></h4>
+            <ul className="space-y-5 text-base font-bold text-background/80">
+              <li><Link href={`/${locale}/`} className="hover:text-white hover:translate-x-1 transition-all block"><T>Portada</T></Link></li>
+              <li><Link href={`/${locale}/experiencias`} className="hover:text-white hover:translate-x-1 transition-all block"><T>Explora</T></Link></li>
+              <li><Link href={`/${locale}/#precios`} className="hover:text-white hover:translate-x-1 transition-all block"><T>Precios</T></Link></li>
             </ul>
           </div>
 
-          {/* Columna 3: Legal */}
           <div>
-            <h4 className="font-bold mb-6 text-white uppercase tracking-widest text-xs"><T>Legal</T></h4>
-            <ul className="space-y-4 text-sm font-medium text-background/60">
-              <li><Link href={`/${locale}/aviso-de-privacidad`} className="hover:text-primary transition-colors"><T>Aviso de Privacidad</T></Link></li>
-              <li><Link href={`/${locale}/terminos-y-condiciones`} className="hover:text-primary transition-colors"><T>Términos y Condiciones</T></Link></li>
+            <h4 className="font-black mb-8 text-primary uppercase tracking-widest text-sm"><T>Normativa</T></h4>
+            <ul className="space-y-5 text-base font-bold text-background/80">
+              <li><Link href={`/${locale}/aviso-de-privacidad`} className="hover:text-white hover:translate-x-1 transition-all block"><T>Aviso de Privacidad</T></Link></li>
+              <li><Link href={`/${locale}/terminos-y-condiciones`} className="hover:text-white hover:translate-x-1 transition-all block"><T>Términos y Condiciones</T></Link></li>
             </ul>
           </div>
 
-          {/* Columna 4: Contacto */}
           <div>
-            <h4 className="font-bold mb-6 text-white uppercase tracking-widest text-xs"><T>Soporte</T></h4>
-            <ul className="space-y-4 text-sm font-medium text-background/60">
-              <li className="flex items-center gap-3"><Mail className="w-4 h-4 text-primary" /> info@tripnova.com.mx</li>
-              <li className="flex items-center gap-3"><Phone className="w-4 h-4 text-primary" /> +52 55 5555 5555</li>
-              <li className="flex items-center gap-3"><MapPin className="w-4 h-4 text-primary" /> Ciudad de México, MX</li>
+            <h4 className="font-black mb-8 text-primary uppercase tracking-widest text-sm"><T>Atención al Cliente</T></h4>
+            <ul className="space-y-5 text-base font-bold text-background/80">
+              <li className="flex items-center gap-4"><Mail className="w-5 h-5 text-white/50" /> info@rovia.com.mx</li>
+              <li className="flex items-center gap-4"><Phone className="w-5 h-5 text-white/50" /> +52 55 5555 5555</li>
+              <li className="flex items-center gap-4"><MapPin className="w-5 h-5 text-white/50" /> Ciudad de México, MX</li>
             </ul>
-          </div>
-
-        </div>
-
-        {/* Separador y Copyright */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-bold text-background/40">
-          <p>© {new Date().getFullYear()} Tripnova. <T>Todos los derechos reservados.</T></p>
-          <div className="flex gap-2">
-            <span className="px-2 py-1 bg-background/10 rounded-md">Transacciones 100% Seguras</span>
           </div>
         </div>
 
+        <div className="border-t border-white/10 pt-10 flex flex-col md:flex-row items-center justify-between gap-6 text-sm font-bold text-background/50">
+          <p>© {new Date().getFullYear()} Rovia. <T>Derechos protegidos.</T></p>
+          <div className="flex gap-3">
+            <span className="px-5 py-2.5 bg-white/5 rounded-full border border-white/10 text-white/80 tracking-wide"><T>Pagos Encriptados y Seguros</T></span>
+          </div>
+        </div>
       </div>
     </footer>
   );

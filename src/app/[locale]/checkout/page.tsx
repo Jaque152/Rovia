@@ -33,13 +33,13 @@ function CheckoutContent() {
   const locale = useLocale();
 
   useEffect(() => {
-    const savedData = sessionStorage.getItem("tripnova_temp_contact");
+    const savedData = sessionStorage.getItem("rovia_temp_contact");
     if (savedData) {
       const { nombre, email, folio } = JSON.parse(savedData);
       setContactInfo(prev => ({ ...prev, firstName: nombre, email: email }));
       setOrderNotes(`Pago referente al Folio: ${folio}`);
       setAddNotes(true);
-      sessionStorage.removeItem("tripnova_temp_contact"); 
+      sessionStorage.removeItem("rovia_temp_contact"); 
     }
   }, []);
 
@@ -97,7 +97,7 @@ function CheckoutContent() {
     setCardInfo({ ...cardInfo, expiry: val });
   };
 
-  // Clases actualizadas al look Tripnova
+  // Clases actualizadas al look rovia
   const inputClass = "h-14 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary rounded-xl px-5 font-bold text-foreground placeholder:text-muted-foreground placeholder:font-medium";
 
   if (showSuccess) {
@@ -175,7 +175,7 @@ function CheckoutContent() {
               </div>
             </div>
 
-            {/* Panel Pago (Look Tripnova Oscuro) */}
+            {/* Panel Pago (Look rovia Oscuro) */}
             <div className="bg-foreground p-8 md:p-10 shadow-xl shadow-primary/10 rounded-[2rem] relative overflow-hidden text-background">
               <div className="absolute -top-20 -right-20 p-6 opacity-[0.03] pointer-events-none">
                 <CreditCard className="w-[400px] h-[400px]" />

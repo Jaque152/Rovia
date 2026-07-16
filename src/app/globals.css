@@ -1,5 +1,4 @@
-/* globals.css */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,86 +6,85 @@
 
 @layer base {
   :root {
-    /* Tripnova Palette: Sunset Horizon (Off-White, Deep Onyx, Vibrant Coral) */
-    --background: 30 20% 98%; /* Warm Off-white */
-    --foreground: 0 0% 10%; /* Deep Onyx */
-    --card: 0 0% 100%; /* Puro blanco para resaltar sobre el fondo cálido */
-    --card-foreground: 0 0% 10%;
+    /* Rovia Palette: Ultra Clean & Rosa Mexicano */
+    --background: 0 0% 100%; /* Blanco puro */
+    --foreground: 220 20% 10%; /* Carbón Profundo */
+    --card: 0 0% 100%; 
+    --card-foreground: 220 20% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 220 20% 10%;
     
-    /* Vibrant Coral (#FF6B6B) - Acción principal, llama al viaje */
-    --primary: 354 100% 71%; 
+    /* Rosa Mexicano Vibrante (#E4007C) */
+    --primary: 327 100% 45%; 
     --primary-foreground: 0 0% 100%;
     
-    /* Golden Sand (#FCA311) - Acentos secundarios y calidez */
-    --secondary: 37 98% 53%; 
-    --secondary-foreground: 0 0% 10%;
+    /* Acento (Lavanda eléctrico profundo para contrastar) */
+    --secondary: 260 100% 65%; 
+    --secondary-foreground: 0 0% 100%;
     
-    --muted: 30 10% 90%;
-    --muted-foreground: 25 5% 45%; 
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 45%; 
     
-    --accent: 37 98% 53%;
-    --accent-foreground: 0 0% 10%;
+    --accent: 327 100% 45%;
+    --accent-foreground: 0 0% 100%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 30 10% 85%;
-    --input: 30 10% 85%;
-    --ring: 354 100% 71%;
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 327 100% 45%;
 
-    /* Bordes ligeramente más definidos para un look más premium */
-    --radius: 0.75rem; 
+    /* Bordes máximos para efecto 'Píldora/Burbuja' */
+    --radius: 1.5rem; 
   }
 
   .dark {
-    /* Dark mode con tonos profundos de medianoche en lugar de grises neutros */
-    --background: 240 10% 10%;
-    --foreground: 30 20% 98%;
-    --card: 240 10% 12%;
-    --card-foreground: 30 20% 98%;
-    --popover: 240 10% 12%;
-    --popover-foreground: 30 20% 98%;
-    --primary: 354 100% 75%;
-    --primary-foreground: 240 10% 10%;
-    --secondary: 37 98% 60%;
-    --secondary-foreground: 240 10% 10%;
-    --muted: 240 10% 18%;
-    --muted-foreground: 240 5% 65%;
-    --border: 240 10% 18%;
-    --input: 240 10% 18%;
-    --ring: 354 100% 75%;
+    /* Dark mode Rovia: Azul medianoche ultra premium */
+    --background: 224 40% 4%; 
+    --foreground: 210 20% 98%;
+    --card: 224 30% 7%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 30% 7%;
+    --popover-foreground: 210 20% 98%;
+    
+    --primary: 327 90% 55%; /* Rosa un poco más claro para contraste */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 260 100% 70%;
+    --secondary-foreground: 0 0% 100%;
+    
+    --muted: 224 25% 15%;
+    --muted-foreground: 215 15% 65%;
+    
+    --border: 224 25% 15%;
+    --input: 224 25% 15%;
+    --ring: 327 90% 55%;
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Outfit', sans-serif;
-    @apply tracking-tight;
+    font-family: 'Space Grotesk', sans-serif;
+    @apply tracking-tighter;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)];
+    @apply bg-white/70 backdrop-blur-2xl border border-white/50 shadow-[0_12px_40px_rgb(0,0,0,0.06)];
   }
   .dark .glass-panel {
-    @apply bg-zinc-900/60 border-zinc-800/50 shadow-[0_8px_30px_rgb(0,0,0,0.3)];
+    @apply bg-slate-950/60 border-slate-800/50 shadow-[0_12px_40px_rgb(0,0,0,0.4)];
   }
-  
   .text-gradient-cool {
-    /* Ajustado para los nuevos colores vibrantes */
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
   }
-
   .animate-fade-up {
     animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
@@ -97,8 +95,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Scrollbar rediseñado para que coincida con la nueva marca */
-::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 12px; }
-::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary)); }

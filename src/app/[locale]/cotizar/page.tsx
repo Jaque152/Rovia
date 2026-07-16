@@ -49,7 +49,7 @@ export default function CotizarPage() {
     try {
       // 1. Guardar en Base de Datos
       const customer_name = `${formData.firstName} ${formData.lastName}`.trim();
-      const { error: dbError } = await supabase.from('custom_quotes_tripnova').insert([
+      const { error: dbError } = await supabase.from('custom_quotes_rovia').insert([
         {
           customer_name: customer_name, customer_email: formData.email, phone: formData.phone, destination: formData.destination,
           start_date: formData.startDate, pax_qty: formData.travelers, budget: formData.budget,
@@ -90,7 +90,7 @@ export default function CotizarPage() {
   minDate.setDate(minDate.getDate() + 1);
   const minDateStr = minDate.toISOString().split("T")[0];
 
-  // Tripnova Style Inputs
+  // rovia Style Inputs
   const inputClass = "h-14 bg-background border border-border focus-visible:ring-2 focus-visible:ring-primary rounded-xl px-5 font-bold text-foreground placeholder:text-muted-foreground placeholder:font-medium";
   const labelClass = "text-xs font-black uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2 ml-1";
 
@@ -123,7 +123,7 @@ export default function CotizarPage() {
       <Header />
       <main className="flex-1 pt-24 pb-20">
         
-        {/* Cabecera Tripnova */}
+        {/* Cabecera rovia */}
         <div className="container mx-auto px-4 lg:px-8 mt-10 mb-16">
           <div className="bg-foreground rounded-[2.5rem] p-12 md:p-20 relative overflow-hidden text-center shadow-2xl">
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 blur-[150px] rounded-full pointer-events-none" />

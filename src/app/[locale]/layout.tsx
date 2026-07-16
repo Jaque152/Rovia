@@ -9,8 +9,8 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "Tripnova | Tu Próxima Gran Aventura",
-  description: "Curamos itinerarios a la medida y experiencias inolvidables. Descubre el mundo con el respaldo y la innovación de Tripnova.",
+  title: "Rovia | Descubre México con Autenticidad",
+  description: "Curamos itinerarios a la medida y experiencias inolvidables. Descubre el mundo con el respaldo y la innovación de Rovia.",
 };
 
 export default async function RootLayout({

@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     // 2A. LÓGICA PARA CONTACTO GENERAL
     // ==========================================
     if (type === 'CONTACT') {
-      subjectClient = isEn ? '[Tripnova] We have received your message' : '[Tripnova] Hemos recibido tu mensaje';
+      subjectClient = isEn ? '[Rovia] We have received your message' : '[Rovia] Hemos recibido tu mensaje';
       subjectInternal = `[NUEVO MENSAJE DE CONTACTO] - ${customerName}`;
 
       const bodyText = isEn 
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       htmlClient = `
         <div style="font-family: 'DM Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1a1a1a; max-width: 600px; margin: auto; border: 1px solid #e5e5e5; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
           <div style="background-color: ${bgDark}; padding: 40px 20px; text-align: center; border-bottom: 4px solid ${textAccent};">
-            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">TRIPNOVA</h1>
+            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">Rovia</h1>
           </div>
           <div style="padding: 40px 30px; background-color: #ffffff;">
             <h2 style="color: ${bgDark}; margin-top: 0; font-size: 24px; font-weight: 800;">${greeting}</h2>
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
             </div>
 
             <div style="text-align: center; margin-top: 40px;">
-              <a href="https://tripnova.com/${locale}/#experiencias" style="display: inline-block; background-color: ${textAccent}; color: #ffffff; padding: 16px 32px; border-radius: 9999px; text-decoration: none; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
+              <a href="https://rovia.com.mx/${locale}/#experiencias" style="display: inline-block; background-color: ${textAccent}; color: #ffffff; padding: 16px 32px; border-radius: 9999px; text-decoration: none; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">
                 ${btnText}
               </a>
             </div>
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
       htmlInternal = `
         <div style="font-family: sans-serif; color: #333;">
-          <h2 style="color: ${textAccent};">Nuevo Mensaje Web (Tripnova)</h2>
+          <h2 style="color: ${textAccent};">Nuevo Mensaje Web (Rovia)</h2>
           <hr/>
           <p><strong>Nombre:</strong> ${customerName}</p>
           <p><strong>Email:</strong> ${email}</p>
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
     // 2B. LÓGICA PARA COTIZACIONES
     // ==========================================
     else if (type === 'QUOTE') {
-      subjectClient = isEn ? `[Tripnova] We are designing your route to ${destination}` : `[Tripnova] Estamos diseñando tu ruta a ${destination}`;
+      subjectClient = isEn ? `[Rovia] We are designing your route to ${destination}` : `[Rovia] Estamos diseñando tu ruta a ${destination}`;
       subjectInternal = `[NUEVA COTIZACIÓN] - ${destination} - ${customerName}`;
 
       const conciergeTitle = isEn ? 'Concierge Service' : 'Servicio Concierge';
@@ -99,7 +99,7 @@ export async function POST(req: Request) {
       htmlClient = `
         <div style="font-family: 'DM Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1a1a1a; max-width: 600px; margin: auto; border: 1px solid #e5e5e5; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
           <div style="background-color: ${bgDark}; padding: 40px 30px; text-align: center; border-bottom: 4px solid ${textAccent};">
-            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">TRIPNOVA</h1>
+            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">Rovia</h1>
             <p style="color: ${textGold}; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 4px; margin-top: 10px;">${conciergeTitle}</p>
           </div>
           <div style="padding: 40px 30px; background-color: #ffffff;">
@@ -142,7 +142,7 @@ export async function POST(req: Request) {
 
       htmlInternal = `
         <div style="font-family: sans-serif; color: #333;">
-          <h2 style="color: ${textAccent};">Nueva Cotización (Tripnova)</h2>
+          <h2 style="color: ${textAccent};">Nueva Cotización (Rovia)</h2>
           <hr/>
           <p><strong>Cliente:</strong> ${customerName}</p>
           <p><strong>Destino:</strong> ${destination}</p>
@@ -160,7 +160,7 @@ export async function POST(req: Request) {
 
     // 3. ENVÍO DE CORREOS
     const { data, error } = await resend.emails.send({
-      from: 'Tripnova <info@tripnova.com.mx>',
+      from: 'Rovia <info@rovia.com.mx>',
       to: [email],
       subject: subjectClient,
       html: htmlClient,
@@ -172,8 +172,8 @@ export async function POST(req: Request) {
     }
 
     const internalMail = await resend.emails.send({
-      from: 'Sistema Tripnova <info@tripnova.com.mx>',
-      to: ['info@tripnova.com.mx'], 
+      from: 'Sistema rovia <info@rovia.com.mx>',
+      to: ['info@rovia.com.mx'], 
       subject: subjectInternal,
       html: htmlInternal,
     });

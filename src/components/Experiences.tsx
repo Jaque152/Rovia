@@ -1,99 +1,121 @@
 "use client";
 import { useLocale } from 'next-intl';
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Compass } from "lucide-react";
+import { ArrowRight, Leaf, Compass, MapPin } from "lucide-react";
 import Link from "next/link";
 import { T } from "@/components/T";
 
 export function Experiences() {
   const locale = useLocale();
+  
   return (
-    <section id="experiencias" className="py-24 lg:py-32 relative bg-background border-t border-border/50">
-      <div className="container mx-auto px-4 lg:px-8 relative z-10">
+    <section id="experiencias" className="py-24 lg:py-32 relative bg-background overflow-hidden border-y border-border/40">
+      <div className="container mx-auto px-6 lg:px-8 relative z-10">
         
-        {/* Cabecera */}
-        <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-20">
-          <div className="max-w-2xl">
-            <Badge variant="outline" className="mb-6 rounded-full px-5 py-2 border-primary/30 text-primary font-bold tracking-widest uppercase text-xs bg-primary/5">
-              <T>Gestión de Viajes</T>
-            </Badge>
-            <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-[1] text-foreground">
-              <T>Recorre México con rutas</T> <br className="hidden md:block"/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-                <T>exclusivas e imborrables.</T>
-              </span>
-            </h2>
-          </div>
-          <Button asChild variant="outline" className="rounded-full h-12 px-6 font-bold border-2 border-border hover:bg-foreground hover:text-background transition-colors text-foreground">
-            <Link href={`/${locale}/experiencias`}><T>Ver todos los planes</T></Link>
-          </Button>
+        {/* Cabecera Editorial Asimétrica */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-10 mb-16 lg:mb-24 animate-fade-up">
+           <div className="max-w-4xl">
+             <div className="inline-flex items-center gap-3 mb-8 px-5 py-2 rounded-full border border-primary/20 text-primary font-black tracking-widest uppercase text-xs bg-primary/5 shadow-sm">
+               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+               <T>Curaduría de Destinos</T>
+             </div>
+             <h2 className="text-5xl md:text-7xl lg:text-[5.5rem] font-black tracking-tighter leading-[0.9] text-foreground">
+               <T>Conecta con la</T> <br />
+               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                 <T>esencia de México.</T>
+               </span>
+             </h2>
+           </div>
+           
+           <Button asChild variant="outline" className="shrink-0 rounded-full h-16 px-10 font-black text-base border-2 border-border hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm hover:shadow-primary/30 group">
+             <Link href={`/${locale}/experiencias`}>
+               <T>Ver catálogo completo</T>
+               <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform" />
+             </Link>
+           </Button>
         </div>
 
-        {/* Layout de Categorías Nuevas */}
-        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+        {/* Layout Asimétrico (Bento Z-Layout) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           
-          {/* Tarjeta Destacada: Itinerarios de Viaje */}
-          <Card className="lg:col-span-2 relative overflow-hidden bg-foreground text-background border-none rounded-[2rem] shadow-xl group">
-             {/* Imagen épica de carretera o mapa */}
-             <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/346885/pexels-photo-346885.jpeg')] bg-cover bg-center opacity-40 group-hover:opacity-50 transition-opacity duration-500 mix-blend-overlay" />
-             
-             <CardContent className="p-10 md:p-14 h-full flex flex-col justify-end relative z-10 min-h-[400px]">
-                <Badge className="w-fit mb-6 bg-primary text-white hover:bg-primary border-none font-bold uppercase tracking-widest text-[10px]">
-                  <T>Destacado</T>
-                </Badge>
-                <h3 className="text-4xl md:text-5xl font-black mb-4 tracking-tight text-white">
-                  <T>Itinerarios a la medida</T>
-                </h3>
-                <p className="text-lg text-white/80 max-w-lg mb-8 font-medium leading-relaxed">
-                  <T>Escapadas exprés, rutas para mochileros y road trips familiares diseñados paso a paso para que tú solo disfrutes el camino.</T>
-                </p>
-                <Button asChild className="w-fit rounded-full bg-secondary text-foreground hover:bg-white font-bold h-14 px-8 shadow-lg shadow-secondary/20">
-                  <Link href={`/${locale}/experiencias?categoria=itinerarios-viaje`}>
-                    <T>Explorar itinerarios</T> <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
-                </Button>
-             </CardContent>
-          </Card>
-
-          {/* Tarjetas Secundarias */}
-          <div className="flex flex-col gap-6 lg:gap-8">
+          {/* Columna Izquierda: Tarjeta Vertical Alta (Dark Theme) */}
+          <Link 
+            href={`/${locale}/experiencias?categoria=tours-locales`} 
+            className="lg:col-span-5 relative flex flex-col justify-between p-10 md:p-14 rounded-[3rem] bg-foreground text-background overflow-hidden group shadow-2xl hover:shadow-primary/20 transition-all duration-500 hover:-translate-y-2 min-h-[450px] lg:min-h-[600px] outline-none animate-fade-up" 
+            style={{ animationDelay: '0.1s' }}
+          >
+            <Compass className="absolute -bottom-16 -right-16 w-96 h-96 opacity-[0.04] text-background group-hover:-rotate-12 transition-transform duration-[2s] ease-out" />
             
-            {/* Experiencias de Bienestar */}
-            <Link href={`/${locale}/experiencias?categoria=experiencias-bienestar`} className="flex-1 group">
-              <Card className="h-full border border-border bg-card rounded-[2rem] hover:shadow-xl hover:border-secondary/40 transition-all duration-300 relative overflow-hidden">
-                <Sparkles className="absolute -bottom-6 -right-6 w-32 h-32 opacity-[0.03] text-secondary group-hover:scale-110 transition-transform" />
-                <CardContent className="p-8 flex flex-col h-full justify-between">
-                  <div>
-                    <h3 className="text-2xl font-black mb-3 text-foreground tracking-tight"><T>Bienestar & Spa</T></h3>
-                    <p className="text-muted-foreground text-sm font-medium leading-relaxed"><T>Retiros de yoga, meditación sonora y temazcales tradicionales para reconectar cuerpo y mente.</T></p>
+            <div className="relative z-10 flex items-center justify-between w-full">
+              <div className="w-16 h-16 bg-background/10 rounded-full flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform duration-500">
+                <MapPin className="w-7 h-7 text-background" />
+              </div>
+              <div className="w-12 h-12 rounded-full border border-background/20 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-colors">
+                <ArrowRight className="w-5 h-5 text-background -rotate-45 group-hover:rotate-0 transition-all duration-500" />
+              </div>
+            </div>
+
+            <div className="relative z-10 mt-20">
+              <p className="text-primary font-black uppercase tracking-widest text-xs mb-4"><T>Inmersión Local</T></p>
+              <h3 className="text-4xl md:text-5xl font-black mb-6 text-background tracking-tighter leading-none"><T>Raíces y Leyendas</T></h3>
+              <p className="text-background/70 font-medium leading-relaxed text-lg max-w-sm"><T>Adéntrate en los secretos de cada región, guiado por expertos que conocen la verdadera magia oculta de nuestro país.</T></p>
+            </div>
+          </Link>
+
+          {/* Columna Derecha: Tarjetas Apiladas */}
+          <div className="lg:col-span-7 flex flex-col gap-6 lg:gap-8">
+            
+            {/* Tarjeta Superior: Panorámica con Imagen (Rutas) */}
+            <Link 
+              href={`/${locale}/experiencias?categoria=itinerarios-viaje`} 
+              className="flex-1 relative overflow-hidden rounded-[3rem] group min-h-[350px] lg:min-h-[auto] shadow-xl outline-none animate-fade-up" 
+              style={{ animationDelay: '0.2s' }}
+            >
+               <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/1051075/pexels-photo-1051075.jpeg')] bg-cover bg-center transition-transform duration-[2s] ease-out group-hover:scale-105" />
+               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10" />
+
+               <div className="absolute inset-0 p-10 md:p-12 flex flex-col justify-between">
+                  <div className="flex justify-end">
+                    <div className="bg-primary/90 backdrop-blur-md text-white font-black uppercase tracking-widest text-[10px] px-5 py-2.5 rounded-full shadow-lg">
+                      <T>Top Selección</T>
+                    </div>
                   </div>
-                  <div className="mt-8 flex items-center text-sm font-bold text-secondary">
-                    <T>Descubrir</T> <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                  
+                  <div className="mt-auto">
+                    <h3 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter text-white leading-none">
+                      <T>Tu Viaje, Tu Lienzo</T>
+                    </h3>
+                    <p className="text-base md:text-lg text-white/80 max-w-md mb-8 font-medium leading-relaxed">
+                      <T>Rutas exclusivas construidas a tu ritmo. Sin prisas, sin itinerarios genéricos, pura libertad de explorar.</T>
+                    </p>
+                    <div className="flex items-center text-sm font-black text-primary uppercase tracking-widest">
+                      <T>Armar itinerario</T> <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-3 transition-transform" />
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
+               </div>
             </Link>
 
-            {/* Tours Locales */}
-            <Link href={`/${locale}/experiencias?categoria=tours-locales`} className="flex-1 group">
-              <Card className="h-full border border-border bg-card rounded-[2rem] hover:shadow-xl hover:border-primary/40 transition-all duration-300 relative overflow-hidden">
-                <Compass className="absolute -bottom-6 -right-6 w-32 h-32 opacity-[0.03] text-primary group-hover:scale-110 transition-transform" />
-                <CardContent className="p-8 flex flex-col h-full justify-between">
-                  <div>
-                    <h3 className="text-2xl font-black mb-3 text-foreground tracking-tight"><T>Tours Locales</T></h3>
-                    <p className="text-muted-foreground text-sm font-medium leading-relaxed"><T>Recorridos guiados por expertos en pueblos mágicos, zonas arqueológicas y circuitos gastronómicos.</T></p>
-                  </div>
-                  <div className="mt-8 flex items-center text-sm font-bold text-primary">
-                    <T>Descubrir</T> <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Tarjeta Inferior: Horizontal Clara (Bienestar) */}
+            <Link 
+              href={`/${locale}/experiencias?categoria=experiencias-bienestar`} 
+              className="h-auto lg:h-[220px] p-8 md:p-10 rounded-[3rem] bg-card border border-border/80 flex flex-col sm:flex-row items-start sm:items-center gap-8 group hover:shadow-xl hover:border-primary/40 transition-all duration-500 outline-none hover:-translate-y-1 animate-fade-up" 
+              style={{ animationDelay: '0.3s' }}
+            >
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex shrink-0 items-center justify-center group-hover:bg-primary transition-colors duration-500">
+                <Leaf className="w-10 h-10 text-primary group-hover:text-white transition-colors duration-500" />
+              </div>
+              
+              <div className="flex-1">
+                <h3 className="text-3xl font-black mb-3 text-foreground tracking-tighter"><T>Pausa Consciente</T></h3>
+                <p className="text-muted-foreground font-medium leading-relaxed text-base"><T>Retiros holísticos, meditación y ceremonias ancestrales diseñadas para equilibrar tu energía en entornos de paz.</T></p>
+              </div>
+              
+              <div className="hidden sm:flex w-14 h-14 shrink-0 rounded-full border-2 border-border items-center justify-center group-hover:border-primary group-hover:bg-primary transition-all duration-500">
+                <ArrowRight className="w-6 h-6 text-foreground group-hover:text-white group-hover:translate-x-1 transition-all" />
+              </div>
             </Link>
-            
+
           </div>
-
         </div>
       </div>
     </section>

@@ -20,7 +20,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Cargar del localStorage
   useEffect(() => {
-    const savedCart = localStorage.getItem("Tripnova-cart");
+    const savedCart = localStorage.getItem("Rovia-cart");
     if (savedCart) {
       try {
         setCart(JSON.parse(savedCart));
@@ -34,7 +34,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Guardar en localStorage
   useEffect(() => {
     if (isHydrated) {
-      localStorage.setItem("Tripnova-cart", JSON.stringify(cart));
+      localStorage.setItem("Rovia-cart", JSON.stringify(cart));
     }
   }, [cart, isHydrated]);
 

@@ -3,49 +3,49 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- =====================================================================================
 -- 1. LIMPIEZA PREVENTIVA
 -- =====================================================================================
-DROP TABLE IF EXISTS public.booking_items_tripnova CASCADE;
-DROP TABLE IF EXISTS public.cart_items_tripnova CASCADE;
-DROP TABLE IF EXISTS public.bookings_tripnova CASCADE;
-DROP TABLE IF EXISTS public.activity_packages_tripnova CASCADE;
-DROP TABLE IF EXISTS public.activities_tripnova CASCADE;
-DROP TABLE IF EXISTS public.categories_tripnova CASCADE;
-DROP TABLE IF EXISTS public.customers_tripnova CASCADE;
-DROP TABLE IF EXISTS public.contact_messages_tripnova CASCADE;
-DROP TABLE IF EXISTS public.custom_quotes_tripnova CASCADE;
-DROP TABLE IF EXISTS public.fifa_experiences_tripnova CASCADE;
+DROP TABLE IF EXISTS public.booking_items_rovia CASCADE;
+DROP TABLE IF EXISTS public.cart_items_rovia CASCADE;
+DROP TABLE IF EXISTS public.bookings_rovia CASCADE;
+DROP TABLE IF EXISTS public.activity_packages_rovia CASCADE;
+DROP TABLE IF EXISTS public.activities_rovia CASCADE;
+DROP TABLE IF EXISTS public.categories_rovia CASCADE;
+DROP TABLE IF EXISTS public.customers_rovia CASCADE;
+DROP TABLE IF EXISTS public.contact_messages_rovia CASCADE;
+DROP TABLE IF EXISTS public.custom_quotes_rovia CASCADE;
+DROP TABLE IF EXISTS public.fifa_experiences_rovia CASCADE;
 
 -- =====================================================================================
--- 2. CREACIÓN DE TABLAS TRIPNOVA (Estructura Optimizada)
+-- 2. CREACIÓN DE TABLAS rovia (Estructura Optimizada)
 -- =====================================================================================
 
-CREATE TABLE public.categories_tripnova (
+CREATE TABLE public.categories_rovia (
   id SERIAL PRIMARY KEY,
   name VARCHAR NOT NULL,
   slug VARCHAR NOT NULL UNIQUE
 );
 
-CREATE TABLE public.activities_tripnova (
+CREATE TABLE public.activities_rovia (
   id SERIAL PRIMARY KEY,
   title VARCHAR NOT NULL,
   slug VARCHAR NOT NULL UNIQUE,
   description TEXT,
-  category_id INTEGER REFERENCES public.categories_tripnova(id),
+  category_id INTEGER REFERENCES public.categories_rovia(id),
   location VARCHAR,
   images JSONB,
   important_info JSONB, -- Estructura: {"codigo": "TRG...", "requiere_destino": boolean}
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE public.activity_packages_tripnova (
+CREATE TABLE public.activity_packages_rovia (
   id SERIAL PRIMARY KEY,
-  activity_id INTEGER REFERENCES public.activities_tripnova(id),
+  activity_id INTEGER REFERENCES public.activities_rovia(id),
   package_name VARCHAR NOT NULL, 
   price NUMERIC NOT NULL,
   min_pax INTEGER DEFAULT 1,
   is_active BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE public.customers_tripnova (
+CREATE TABLE public.customers_rovia (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   first_name VARCHAR NOT NULL,
   last_name VARCHAR NOT NULL,
@@ -54,9 +54,9 @@ CREATE TABLE public.customers_tripnova (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE public.bookings_tripnova (
+CREATE TABLE public.bookings_rovia (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  customer_id UUID REFERENCES public.customers_tripnova(id),
+  customer_id UUID REFERENCES public.customers_rovia(id),
   session_id VARCHAR, 
   total_amount NUMERIC NOT NULL,
   payment_status VARCHAR DEFAULT 'pending',
@@ -72,17 +72,17 @@ CREATE TABLE public.bookings_tripnova (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE public.booking_items_tripnova (
+CREATE TABLE public.booking_items_rovia (
   id SERIAL PRIMARY KEY,
-  booking_id UUID REFERENCES public.bookings_tripnova(id),
-  package_id INTEGER REFERENCES public.activity_packages_tripnova(id),
+  booking_id UUID REFERENCES public.bookings_rovia(id),
+  package_id INTEGER REFERENCES public.activity_packages_rovia(id),
   scheduled_date DATE NOT NULL,
   scheduled_time VARCHAR,
   pax_qty INTEGER DEFAULT 1,
   unit_price NUMERIC NOT NULL
 );
 
-CREATE TABLE public.custom_quotes_tripnova (
+CREATE TABLE public.custom_quotes_rovia (
   id SERIAL PRIMARY KEY,
   customer_name VARCHAR NOT NULL,
   customer_email VARCHAR NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE public.custom_quotes_tripnova (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE public.contact_messages_tripnova (
+CREATE TABLE public.contact_messages_rovia (
   id SERIAL PRIMARY KEY,
   full_name VARCHAR,
   phone VARCHAR,
@@ -105,7 +105,7 @@ CREATE TABLE public.contact_messages_tripnova (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE public.fifa_experiences_tripnova (
+CREATE TABLE public.fifa_experiences_rovia (
   id SERIAL PRIMARY KEY,
   title VARCHAR NOT NULL,
   subtitle VARCHAR,
@@ -118,39 +118,39 @@ CREATE TABLE public.fifa_experiences_tripnova (
 -- =====================================================================================
 -- 3. POLÍTICAS DE SEGURIDAD RLS
 -- =====================================================================================
-ALTER TABLE public.categories_tripnova ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.activities_tripnova ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.activity_packages_tripnova ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.fifa_experiences_tripnova ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.customers_tripnova ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.bookings_tripnova ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.booking_items_tripnova ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.custom_quotes_tripnova ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.contact_messages_tripnova ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.categories_rovia ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.activities_rovia ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.activity_packages_rovia ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.fifa_experiences_rovia ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.customers_rovia ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.bookings_rovia ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.booking_items_rovia ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.custom_quotes_rovia ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contact_messages_rovia ENABLE ROW LEVEL SECURITY;
 
 -- Lectura pública para catálogos
-CREATE POLICY "Lectura pública catálogos" ON public.categories_tripnova FOR SELECT USING (true);
-CREATE POLICY "Lectura pública actividades" ON public.activities_tripnova FOR SELECT USING (true);
-CREATE POLICY "Lectura pública paquetes" ON public.activity_packages_tripnova FOR SELECT USING (true);
-CREATE POLICY "Lectura pública fifa" ON public.fifa_experiences_tripnova FOR SELECT USING (true);
+CREATE POLICY "Lectura pública catálogos" ON public.categories_rovia FOR SELECT USING (true);
+CREATE POLICY "Lectura pública actividades" ON public.activities_rovia FOR SELECT USING (true);
+CREATE POLICY "Lectura pública paquetes" ON public.activity_packages_rovia FOR SELECT USING (true);
+CREATE POLICY "Lectura pública fifa" ON public.fifa_experiences_rovia FOR SELECT USING (true);
 
 -- Permisos para Checkout
-CREATE POLICY "Acceso a clientes en checkout" ON public.customers_tripnova FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Acceso a reservas en checkout" ON public.bookings_tripnova FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Acceso a items de reserva" ON public.booking_items_tripnova FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Acceso a clientes en checkout" ON public.customers_rovia FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Acceso a reservas en checkout" ON public.bookings_rovia FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Acceso a items de reserva" ON public.booking_items_rovia FOR ALL USING (true) WITH CHECK (true);
 
 -- Permisos explícitos para formularios web (Cotizar y Contacto)
-CREATE POLICY "Permitir insercion cotizaciones" ON public.custom_quotes_tripnova FOR INSERT TO anon WITH CHECK (true);
-CREATE POLICY "Permitir insercion contacto" ON public.contact_messages_tripnova FOR INSERT TO anon WITH CHECK (true);
+CREATE POLICY "Permitir insercion cotizaciones" ON public.custom_quotes_rovia FOR INSERT TO anon WITH CHECK (true);
+CREATE POLICY "Permitir insercion contacto" ON public.contact_messages_rovia FOR INSERT TO anon WITH CHECK (true);
 
 -- Otorgar los privilegios al rol anónimo para evitar bloqueos silenciosos
-GRANT INSERT ON public.custom_quotes_tripnova TO anon;
-GRANT INSERT ON public.contact_messages_tripnova TO anon;
+GRANT INSERT ON public.custom_quotes_rovia TO anon;
+GRANT INSERT ON public.contact_messages_rovia TO anon;
 
 -- =====================================================================================
--- 4. INSERTAR CATEGORÍAS TRIPNOVA
+-- 4. INSERTAR CATEGORÍAS rovia
 -- =====================================================================================
-INSERT INTO public.categories_tripnova (id, name, slug) VALUES 
+INSERT INTO public.categories_rovia (id, name, slug) VALUES 
 (1, 'Experiencias de Bienestar', 'experiencias-bienestar'),
 (2, 'Itinerarios de Viaje', 'itinerarios-viaje'),
 (3, 'Tours Locales', 'tours-locales'),
@@ -159,36 +159,32 @@ INSERT INTO public.categories_tripnova (id, name, slug) VALUES
 (6, 'Paquetes Combinados', 'paquetes-combinados'),
 (7, 'Planes Premium Travel Concierge', 'premium-travel-concierge');
 
-SELECT setval('categories_tripnova_id_seq', 7);
+SELECT setval('categories_rovia_id_seq', 7);
 
 -- =====================================================================================
 -- 5. INSERTAR LOS 41 NUEVOS PLANES (Asignados correctamente a las nuevas categorías)
 -- =====================================================================================
-INSERT INTO public.activities_tripnova (id, title, slug, category_id, location, description, important_info, images) VALUES
--- =====================================================================================
--- 5. INSERTAR LOS 41 NUEVOS PLANES (Asignados correctamente a las nuevas categorías)
--- =====================================================================================
-INSERT INTO public.activities_tripnova (id, title, slug, category_id, location, description, important_info, images) VALUES
+INSERT INTO public.activities_rovia (id, title, slug, category_id, location, description, important_info, images) VALUES
 (1, 'Sesión de Yoga con Meditación Sonora', 'yoga-meditacion-tepoztlan', 1, 'Tepoztlán', 'Clase de yoga, meditación guiada, terapia con cuencos sonoros, espacio natural de relajación. Precio por persona con IVA incluido.', '{"codigo": "TRG-EB07", "requiere_destino": false}', '["https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg"]'),
 (2, 'Itinerario Express', 'itinerario-express', 2, 'A elección', 'Escapadas de fin de semana o viajes de 1 a 3 días. Ruta básica del destino, 3-6 lugares recomendados, 2-4 recomendaciones de restaurantes locales, actividades principales. El cliente confirma su destino. Precio con IVA incluido.', '{"codigo": "TRG-IT01", "requiere_destino": true}', '["https://images.pexels.com/photos/1051075/pexels-photo-1051075.jpeg"]'),
 (3, 'Experiencias Indígenas Comunitarias', 'experiencias-indigenas-comunitarias', 3, 'Varios', 'Actividad cultural con comunidad local, demostración de tradiciones o artesanías, taller participativo, degustación tradicional, guía comunitario. Duración: 2-4 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TL05", "requiere_destino": false}', '["https://images.pexels.com/photos/982114/pexels-photo-982114.jpeg"]'),
 (4, 'Clase de Yoga en la Naturaleza', 'yoga-naturaleza-tulum', 1, 'Tulum', 'Sesión guiada de yoga, meditación o respiración, uso de tapetes, sesión en playa o selva. Duración: 1-2 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-EB03", "requiere_destino": false}', '["https://images.pexels.com/photos/317157/pexels-photo-317157.jpeg"]'),
 (5, 'Guía Local en Pueblos Mágicos', 'guia-local-pueblos-magicos', 3, 'Varios', 'Recorrido por el centro histórico, explicación cultural e histórica, visita a 3-5 puntos de interés, recomendaciones de restaurantes y tiendas locales, guía certificado. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TL04", "requiere_destino": false}', '["https://images.pexels.com/photos/2312944/pexels-photo-2312944.jpeg"]'),
-(6, 'Temazcal Comunitario Tradicional', 'temazcal-comunitario-san-cristobal', 1, 'San Cristóbal de las Casas', 'Ritual tradicional en grupo, hierbas medicinales, té herbal posterior, guía local. Precio por persona con IVA incluido.', '{"codigo": "TRG-EB04", "requiere_destino": false}', '["https://images.pexels.com/photos/3757954/pexels-photo-3757954.jpeg"]'),
+(6, 'Temazcal Comunitario Tradicional', 'temazcal-comunitario-san-cristobal', 1, 'San Cristóbal de las Casas', 'Ritual tradicional en grupo, hierbas medicinales, té herbal posterior, guía local. Precio por persona con IVA incluido.', '{"codigo": "TRG-EB04", "requiere_destino": false}', '["https://images.pexels.com/photos/16847942/pexels-photo-16847942.jpeg"]'),
 (7, 'Itinerario Económico Digital', 'itinerario-economico-digital', 2, 'A elección', 'Guía organizada para viajeros. PDF descargable, mapa de lugares, lista de hospedajes económicos, recomendación de 5 restaurantes locales. El cliente confirma su destino. Precio con IVA incluido.', '{"codigo": "TRG-IT02", "requiere_destino": false}', '["https://images.pexels.com/photos/4050291/pexels-photo-4050291.jpeg"]'),
-(8, 'Itinerario para Viajeros Mochileros', 'itinerario-mochileros', 2, 'A elección', 'Transporte económico, hostales and actividades baratas. Transporte público sugerido, hostales, rutas a pie, actividades gratuitas. El cliente confirma su destino. Precio con IVA incluido.', '{"codigo": "TRG-IT03", "requiere_destino": false}', '["https://images.pexels.com/photos/1252433/pexels-photo-1252433.jpeg"]'),
-(9, 'Taller de Papel Amate', 'taller-papel-amate-san-pablito', 4, 'San Pablito', 'Proceso artesanal, elaboración de papel, creación de pieza artesanal sencilla, recorrido por talleres comunitarios. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA07", "requiere_destino": false}', '["https://images.pexels.com/photos/2312301/pexels-photo-2312301.jpeg"]'),
-(10, 'Taller de Textiles Tradicionales', 'taller-textiles-zinacantan', 4, 'Zinacantán', 'Telar de cintura, bordados tradicionales, tejido básico, vestimenta tradicional. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA04", "requiere_destino": false}', '["https://images.pexels.com/photos/1010375/pexels-photo-1010375.jpeg"]'),
+(8, 'Itinerario para Viajeros Mochileros', 'itinerario-mochileros', 2, 'A elección', 'Transporte económico, hostales and actividades baratas. Transporte público sugerido, hostales, rutas a pie, actividades gratuitas. El cliente confirma su destino. Precio con IVA incluido.', '{"codigo": "TRG-IT03", "requiere_destino": false}', '["https://images.pexels.com/photos/27694029/pexels-photo-27694029.jpeg"]'),
+(9, 'Taller de Papel Amate', 'taller-papel-amate-san-pablito', 4, 'San Pablito', 'Proceso artesanal, elaboración de papel, creación de pieza artesanal sencilla, recorrido por talleres comunitarios. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA07", "requiere_destino": false}', '["https://images.pexels.com/photos/35883698/pexels-photo-35883698.jpeg"]'),
+(10, 'Taller de Textiles Tradicionales', 'taller-textiles-zinacantan', 4, 'Zinacantán', 'Telar de cintura, bordados tradicionales, tejido básico, vestimenta tradicional. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA04", "requiere_destino": false}', '["https://images.pexels.com/photos/33703938/pexels-photo-33703938.jpeg"]'),
 (11, 'Recomendaciones de Renta de Autos', 'recomendaciones-renta-autos', 5, 'Nacional', 'Comparación de agencias, recomendaciones de seguros, reserva anticipada. Precio con IVA incluido.', '{"codigo": "TRG-SV01", "requiere_destino": false}', '["https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg"]'),
 (12, 'Experiencia Huasteca Cultural', 'huasteca-cultural-xilitla', 3, 'Xilitla', 'Música huasteca, baile tradicional, degustación de comida regional, tradiciones locales. Duración: 2-4 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA08", "requiere_destino": false}', '["https://images.pexels.com/photos/3355788/pexels-photo-3355788.jpeg"]'),
 (13, 'Experiencia Purépecha Cultural', 'purepecha-cultural-tzintzuntzan', 3, 'Tzintzuntzan', 'Recorrido por comunidad indígena, tradiciones purépechas, artesanía local, degustación de comida tradicional. Duración: 2-4 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA05", "requiere_destino": false}', '["https://images.pexels.com/photos/11095394/pexels-photo-11095394.jpeg"]'),
-(14, 'Taller de Barro Tradicional', 'taller-barro-coyotepec', 4, 'San Bartolo Coyotepec', 'Demostración de elaboración de barro negro, taller de modelado, técnicas tradicionales, recorrido por taller artesanal. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA01", "requiere_destino": false}', '["https://images.pexels.com/photos/2209529/pexels-photo-2209529.jpeg"]'),
-(15, 'Taller de Máscaras Tradicionales', 'taller-mascaras-tocuaro', 4, 'Tócuaro', 'Tallado en madera, uso cultural de las máscaras, pintura básica, interacción con artesanos. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA06", "requiere_destino": false}', '["https://images.pexels.com/photos/1310182/pexels-photo-1310182.jpeg"]'),
+(14, 'Taller de Barro Tradicional', 'taller-barro-coyotepec', 4, 'San Bartolo Coyotepec', 'Demostración de elaboración de barro negro, taller de modelado, técnicas tradicionales, recorrido por taller artesanal. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA01", "requiere_destino": false}', '["https://images.pexels.com/photos/20297359/pexels-photo-20297359.jpeg"]'),
+(15, 'Taller de Máscaras Tradicionales', 'taller-mascaras-tocuaro', 4, 'Tócuaro', 'Tallado en madera, uso cultural de las máscaras, pintura básica, interacción con artesanos. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA06", "requiere_destino": false}', '["https://images.pexels.com/photos/7399348/pexels-photo-7399348.jpeg"]'),
 (16, 'Tour de Mezcal', 'tour-mezcal-pueblos', 6, 'Pueblos Pequeños', 'Visita a 1-2 palenques artesanales, explicación del proceso del mezcal, degustación de 3-5 variedades, guía mezcalero, transporte local, compra directa al productor. Duración: 3-5 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TL03", "requiere_destino": false}', '["https://images.pexels.com/photos/5947019/pexels-photo-5947019.jpeg"]'),
 (17, 'Taller de Talabartería', 'taller-talabarteria-leon', 4, 'León', 'Trabajo en cuero, proceso artesanal, actividad sencilla participativa, visita a taller local. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA09", "requiere_destino": false}', '["https://images.pexels.com/photos/461098/pexels-photo-461098.jpeg"]'),
-(18, 'Taller de Alebrijes', 'taller-alebrijes-tilcajete', 4, 'San Martín Tilcajete', 'Arte de los alebrijes, tallado en madera, pintura básica de figura artesanal, interacción con artesanos locales. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA02", "requiere_destino": false}', '["https://images.pexels.com/photos/20348037/pexels-photo-20348037.jpeg"]'),
-(19, 'Experiencia de Bienestar en Cenotes', 'bienestar-cenotes-valladolid', 1, 'Valladolid', 'Meditación guiada, yoga en cenote o naturaleza, baño en cenote, bebidas naturales. Precio por persona con IVA incluido.', '{"codigo": "TRG-EB10", "requiere_destino": false}', '["https://images.pexels.com/photos/2704257/pexels-photo-2704257.jpeg"]'),
-(20, 'Tour de 2 Cenotes', 'tour-2-cenotes-yucatan', 3, 'Yucatán', 'Transporte local, entrada a 2 cenotes naturales, tiempo libre para nadar, chaleco salvavidas, guía local, agua o bebida hidratante, seguro básico. Duración: 4-6 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TL01", "requiere_destino": false}', '["https://images.pexels.com/photos/3214958/pexels-photo-3214958.jpeg"]'),
+(18, 'Taller de Alebrijes', 'taller-alebrijes-tilcajete', 4, 'San Martín Tilcajete', 'Arte de los alebrijes, tallado en madera, pintura básica de figura artesanal, interacción con artesanos locales. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA02", "requiere_destino": false}', '["https://images.pexels.com/photos/36439927/pexels-photo-36439927.jpeg"]'),
+(19, 'Experiencia de Bienestar en Cenotes', 'bienestar-cenotes-valladolid', 1, 'Valladolid', 'Meditación guiada, yoga en cenote o naturaleza, baño en cenote, bebidas naturales. Precio por persona con IVA incluido.', '{"codigo": "TRG-EB10", "requiere_destino": false}', '["https://images.pexels.com/photos/12259620/pexels-photo-12259620.jpeg"]'),
+(20, 'Tour de 2 Cenotes', 'tour-2-cenotes-yucatan', 3, 'Yucatán', 'Transporte local, entrada a 2 cenotes naturales, tiempo libre para nadar, chaleco salvavidas, guía local, agua o bebida hidratante, seguro básico. Duración: 4-6 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TL01", "requiere_destino": false}', '["https://images.pexels.com/photos/29438748/pexels-photo-29438748.jpeg"]'),
 (21, 'Experiencia de Cocina Tradicional Maya', 'cocina-tradicional-maya-merida', 6, 'Mérida', 'Preparación de platillos tradicionales, ingredientes regionales, degustación, introducción a tradiciones culinarias mayas. Duración: 3-4 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA03", "requiere_destino": false}', '["https://images.pexels.com/photos/4033157/pexels-photo-4033157.jpeg"]'),
 (22, 'Experiencia de Temazcal Tradicional', 'temazcal-tradicional-tepoztlan', 1, 'Tepoztlán', 'Ceremonia de temazcal guiada, hierbas medicinales, cantos o ritual tradicional, bebidas herbales. Duración: 1-2 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-EB01", "requiere_destino": false}', '["https://images.pexels.com/photos/12911244/pexels-photo-12911244.jpeg"]'),
 (23, 'Taller de Cerámica Tradicional', 'taller-ceramica-mata-ortiz', 4, 'Mata Ortiz', 'Técnicas de cerámica, modelado y decoración, creación básica de pieza artesanal, interacción con artesanos. Duración: 2-3 horas. Precio por persona con IVA incluido.', '{"codigo": "TRG-TA10", "requiere_destino": false}', '["https://images.pexels.com/photos/4112236/pexels-photo-4112236.jpeg"]'),
@@ -211,12 +207,12 @@ INSERT INTO public.activities_tripnova (id, title, slug, category_id, location, 
 (40, 'Paquete Viaje Completo', 'paquete-viaje-completo', 7, 'Nacional', 'Planificación total, reservas (puede llevar costo adicional), soporte durante el viaje. Precio con IVA incluido.', '{"codigo": "TRG-PQ03", "requiere_destino": false}', '["https://images.pexels.com/photos/346885/pexels-photo-346885.jpeg"]'),
 (41, 'Retiro de Yoga frente al Mar', 'retiro-yoga-huatulco', 1, 'Huatulco', 'Hospedaje, clases diarias de yoga, meditación, temazcal y talleres. Duración: 5-7 días. Precio por persona con IVA incluido.', '{"codigo": "TRG-EB09", "requiere_destino": false}', '["https://images.pexels.com/photos/843633/pexels-photo-843633.jpeg"]');
 
-SELECT setval('activities_tripnova_id_seq', 41);
+SELECT setval('activities_rovia_id_seq', 41);
 
 -- =====================================================================================
 -- 6. ASIGNAR TARIFAS ÚNICAS
 -- =====================================================================================
-INSERT INTO public.activity_packages_tripnova (activity_id, package_name, price) VALUES
+INSERT INTO public.activity_packages_rovia (activity_id, package_name, price) VALUES
 (1, 'Tarifa Única', 800.00), (2, 'Tarifa Única', 900.00), (3, 'Tarifa Única', 900.00),
 (4, 'Tarifa Única', 1000.00), (5, 'Tarifa Única', 1200.00), (6, 'Tarifa Única', 1250.00),
 (7, 'Tarifa Única', 1350.00), (8, 'Tarifa Única', 1500.00), (9, 'Tarifa Única', 1500.00),
@@ -235,7 +231,7 @@ INSERT INTO public.activity_packages_tripnova (activity_id, package_name, price)
 -- =====================================================================================
 -- 7. DATOS MUNDIAL
 -- =====================================================================================
-INSERT INTO public.fifa_experiences_tripnova (title, subtitle, description, items, image_url, order_index) VALUES
+INSERT INTO public.fifa_experiences_rovia (title, subtitle, description, items, image_url, order_index) VALUES
 ('Estadios y Museos', 'Recorridos Históricos', 'Visitas guiadas a los templos del fútbol y acceso a zonas restringidas.', '["Visitas guiadas a estadios", "Acceso a vestidores", "Recorridos por museos"]', 'https://images.pexels.com/photos/12327672/pexels-photo-12327672.jpeg', 1),
 ('Fan Experiences', 'Interacción Total', 'Zonas de realidad virtual y encuentros con leyendas del deporte.', '["Clínicas de fútbol", "Realidad virtual", "Meet & greet"]', 'https://images.pexels.com/photos/33660694/pexels-photo-33660694.jpeg', 2),
 ('Viewing Parties', 'Eventos en Vivo', 'Proyección de partidos en pantallas gigantes con ambiente temático.', '["Pantallas gigantes", "Trivia y juegos", "Catering temático"]', 'https://images.pexels.com/photos/26832707/pexels-photo-26832707.jpeg', 3),
