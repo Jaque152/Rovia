@@ -53,6 +53,7 @@ export function Footer() {
             <ul className="space-y-5 text-base font-bold text-background/80">
               <li><Link href={`/${locale}/aviso-de-privacidad`} className="hover:text-white hover:translate-x-1 transition-all block"><T>Aviso de Privacidad</T></Link></li>
               <li><Link href={`/${locale}/terminos-y-condiciones`} className="hover:text-white hover:translate-x-1 transition-all block"><T>Términos y Condiciones</T></Link></li>
+              <li><Link href={`/${locale}/politica-de-cancelacion`} className="hover:text-white hover:translate-x-1 transition-all block"><T>Política de Reembolsos, Cancelaciones y Devoluciones</T></Link></li>
             </ul>
           </div>
 

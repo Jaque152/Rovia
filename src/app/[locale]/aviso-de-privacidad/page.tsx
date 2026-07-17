@@ -1,13 +1,132 @@
+"use client";
+
+import { useLocale } from 'next-intl';
 import { LegalPage } from "@/components/LegalPage";
 
-const sections = [
+const esSections = [
   {
-    heading: "Página fuera de servicio",
-    content: ""
+    heading: "Aviso de Privacidad – ARNUG, S.A. DE C.V. (ROVIA)",
+    content: "Última actualización: 23 de junio 2026.\n\nCon fundamento en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares y su Reglamento, ponemos a tu disposición el presente Aviso de Privacidad, mediante el cual explicamos de manera clara cómo recabamos, usamos, almacenamos, compartimos y protegemos tus datos personales cuando utilizas nuestro sitio web http://rovia.com.mx (en adelante el “Sitio”), nos contactas, solicitas información, cotizas, contratas o utilizas cualquiera de nuestros servicios."
   },
-  
+  {
+    heading: "PRIMERA.- Identidad y domicilio del responsable",
+    content: "Somos responsables del tratamiento de tus datos personales. Nuestra denominación social es ARNUG, S.A. DE C.V., con domicilio en Avenida Coyoacán 1878, Piso 14 Dep. 1405 – A, Colonia Del Valle Benito Juárez, Ciudad de Mexico, C.P. 03100 y correo de contacto http://rovia.com.mx. Cualquier duda relacionada con el tratamiento de tus datos podrá ser canalizada a través de dicho correo o por los medios de contacto publicados en el sitio."
+  },
+  {
+    heading: "SEGUNDA.- Datos personales que recabamos",
+    content: "Los datos que podemos recabar, de forma directa a través del sitio, formularios, correo electrónico, mensajería, llamadas o cualquier otro medio de contacto, incluyen de manera enunciativa más no limitativa:\n\nDatos de identificación: nombre completo, en su caso apellido(s), alias o forma de tratamiento preferida.\n\nDatos de contacto: correo electrónico, número telefónico, ciudad o entidad de residencia, y, en su caso, otros medios de contacto que tú nos proporciones.\n\nDatos relacionados con el viaje: destinos de interés, fechas estimadas o tentativas, número de personas que viajan, rangos de edad, duración del viaje, tipo de experiencia buscada (aventura, cultural, gastronómica, bienestar, romántica, familiar, mochilera, etc.), preferencias generales de viaje y presupuesto aproximado.\n\nInformación relativa a servicios contratados: tipo de plan o experiencia, paquete seleccionado, modalidad de servicio (itinerario digital, itinerario personalizado, plan estratégico, travel planner, concierge, experiencia específica, entre otros), histórico de cotizaciones y comunicaciones relacionadas.\n\nDatos de facturación: RFC, razón social, domicilio fiscal y datos requeridos para la emisión de comprobantes fiscales, cuando tú los proporciones con ese fin.\n\nDatos de medios de pago: en la medida en que sea necesario, podremos recabar referencia del medio de pago utilizado; cuando el pago se procese por pasarelas o plataformas de terceros, los datos sensibles de tarjeta se tratarán directamente en dichas plataformas, de acuerdo con sus propias políticas.\n\nEn ciertos casos podríamos recabar información adicional relacionada con restricciones alimentarias, preferencias especiales o necesidades logísticas para efectos de planeación del viaje; no obstante, no solicitamos de forma habitual datos sensibles (como información de salud detallada, religión, orientación política o étnica) y, en caso de que voluntariamente los compartas, los trataremos con especial cuidado y solo para los fines que tú indiques o que resulten evidentes."
+  },
+  {
+    heading: "TERCERA.- Medios a través de los cuales recabamos tus datos",
+    content: "Podemos obtener tus datos personales por las siguientes vías:\n\nDirectamente cuando tú los proporcionas al llenar formularios en el sitio (por ejemplo, “Cotiza tu experiencia de viaje” o formularios de contacto), al enviarnos un correo, mensaje o al comunicarnos por teléfono.\n\nDe manera indirecta cuando nos contactas a través de plataformas de mensajería, redes sociales, formularios de terceros o enlaces desde otros sitios, siempre dentro del contexto de los servicios que ofrecemos.\n\nA través del uso del sitio, mediante ciertas tecnologías que nos permiten obtener datos técnicos o de navegación, como se explica en el apartado de cookies y tecnologías similares."
+  },
+  {
+    heading: "CUARTA.- Finalidades del tratamiento",
+    content: "Utilizaremos tus datos personales para las siguientes finalidades primarias, necesarias para la prestación de nuestros servicios y la relación contigo:\n\nAtender y dar seguimiento a tus solicitudes de información, cotizaciones y mensajes.\n\nDiseñar, elaborar y enviarte propuestas personalizadas, itinerarios, guías, recomendaciones, planes estratégicos, experiencias y servicios relacionados con viajes y turismo.\n\nGestionar la contratación de servicios, incluyendo el registro de tu solicitud, identificación de pagos, seguimiento de entregables y atención de dudas operativas sobre los servicios contratados.\n\nMantener comunicación contigo antes, durante y, en su caso, después del viaje, para resolución de dudas, confirmaciones, ajustes de itinerario y cuestiones logísticas relacionadas.\n\nEmitir comprobantes fiscales (facturas) cuando así lo solicites y nos proporciones la información necesaria.\n\nDar cumplimiento a obligaciones legales, administrativas, fiscales o de atención a autoridades competentes.\n\nAdicionalmente, podremos utilizar tus datos para las siguientes finalidades secundarias, que no son estrictamente necesarias para la prestación del servicio, pero nos permiten mejorar y ampliar nuestra oferta:\n\nEnviarte comunicaciones informativas, boletines, recomendaciones de destinos, novedades sobre nuestros servicios o contenidos relacionados con experiencias de viaje, siempre que así lo hayas autorizado o que la legislación aplicable lo permita.\n\nRealizar encuestas de satisfacción, análisis internos, estadísticas y estudios sobre la calidad y uso de nuestros servicios.\n\nElaborar perfiles generales de preferencias turísticas y de viaje, de forma que podamos mejorar la personalización de futuras propuestas, sin que ello implique decisiones automatizadas que produzcan efectos jurídicos relevantes para ti.\n\nSi no deseas que tus datos se utilicen para finalidades secundarias, podrás manifestarlo desde un inicio o en cualquier momento posterior, siguiendo el procedimiento descrito en el apartado de derechos ARCO y mecanismos de revocación."
+  },
+  {
+    heading: "QUINTA.- Transferencias de datos personales",
+    content: "Podremos compartir tus datos personales con terceros únicamente en los siguientes supuestos y bajo las condiciones que establece la legislación aplicable:\n\nCon prestadores de servicios turísticos, como operadores de tours, guías, hoteles, centros de bienestar, comunidades anfitrionas, empresas de transporte, agencias de renta de autos y otros proveedores, únicamente cuando sea necesario para gestionar, coordinar o confirmar servicios relacionados con la experiencia de viaje solicitada y siempre en la medida en que tú hayas autorizado dicha gestión o resulte evidente de la naturaleza del servicio.\n\nCon proveedores de servicios tecnológicos, de procesamiento de pagos, alojamiento de información (“hosting”), herramientas de correo o mensajería y otras plataformas que nos apoyan en la operación del sitio y en la entrega de nuestros servicios, quienes tratarán la información en nuestro nombre y bajo nuestras instrucciones.\n\nCon autoridades competentes cuando exista un requerimiento legal o administrativo debidamente fundado, o cuando sea necesario para la protección de nuestros derechos, la atención de procedimientos, auditorías o cumplimiento de obligaciones legales.\n\nSalvo en los casos anteriores o aquellos en que la ley lo permita o exija, no venderemos, alquilaremos ni cederemos tus datos personales a terceros para fines distintos a los aquí señalados. En los casos en que se realicen transferencias que requieran tu consentimiento, lo recabaremos de forma previa y expresa."
+  },
+  {
+    heading: "SEXTA.- Cookies y tecnologías similares",
+    content: "Nuestro sitio puede utilizar cookies, etiquetas u otras tecnologías similares para:\n\nRecordar ciertas preferencias de navegación.\n\nAnalizar patrones de uso del sitio de forma agregada y anónima.\n\nMejorar la experiencia de usuario y el desempeño de nuestras páginas.\n\nEn la medida en que estas tecnologías permitan identificarte de manera directa o indirecta, se considerarán datos personales y las trataremos conforme a lo previsto en este Aviso. Podrás configurar tu navegador para rechazar o eliminar cookies; sin embargo, ello podría afectar algunas funcionalidades del sitio."
+  },
+  {
+    heading: "SÉPTIMA.- Plazo de conservación",
+    content: "Conservaremos tus datos personales únicamente por el tiempo razonablemente necesario para cumplir con las finalidades descritas, mientras exista una relación vigente contigo, durante los plazos que establezca la legislación aplicable en materia fiscal, mercantil, de consumo o de protección de datos personales, y por el tiempo adicional que resulte necesario para atender responsabilidades u obligaciones pendientes.\n\nCuando los datos dejen de ser necesarios para las finalidades señaladas y no exista obligación legal de conservarlos, procederemos a su supresión, bloqueo o anonimización, según corresponda."
+  },
+  {
+    heading: "OCTAVA.- Medidas de seguridad",
+    content: "Implementamos medidas de seguridad administrativas, técnicas y físicas razonables para proteger tus datos personales contra daño, pérdida, alteración, destrucción, uso indebido, acceso o tratamiento no autorizado, considerando el tipo de datos y el riesgo asociado.\n\nSi bien ningún sistema es completamente infalible, estamos comprometidos en revisar y mejorar continuamente nuestras prácticas de seguridad para reducir al mínimo los riesgos."
+  },
+  {
+    heading: "NOVENA.- Derechos ARCO (Acceso, Rectificación, Cancelación y Oposición)",
+    content: "Tienes derecho a:\n\nAcceder a los datos personales que tenemos sobre ti y conocer los detalles de su tratamiento.\n\nRectificar tus datos cuando sean inexactos, incompletos o estén desactualizados.\n\nCancelar tus datos cuando consideres que no se requieren para alguna de las finalidades señaladas, hayan dejado de ser necesarios, o cuando quieras revocar tu consentimiento (en los casos en que proceda).\n\nOponerte al tratamiento de tus datos para fines específicos, particularmente aquellos que no sean necesarios para la relación jurídica que mantenemos.\n\nPara ejercer cualquiera de estos derechos, podrás enviar una solicitud al correo http://rovia.com.mx, indicando al menos:\n\nTu nombre completo y un medio de contacto (por ejemplo, correo electrónico) para comunicarte la respuesta.\n\nCopia de un documento que acredite tu identidad (por ejemplo, identificación oficial).\n\nUna descripción clara del derecho que deseas ejercer y de los datos personales respecto de los cuales solicitas el acceso, rectificación, cancelación u oposición.\n\nEn caso de rectificación, la información que deba actualizarse o corregirse.\n\nTe responderemos en los plazos establecidos por la legislación aplicable, indicando las determinaciones adoptadas y, en su caso, las razones por las cuales no sea posible atender la solicitud en términos de ley."
+  },
+  {
+    heading: "DÉCIMA.- Revocación del consentimiento y limitación del uso o divulgación",
+    content: "En los casos en que el tratamiento de tus datos se base en tu consentimiento, podrás revocarlo en cualquier momento, sin que ello tenga efectos retroactivos, mediante el envío de una solicitud al correo http://rovia.com.mx, siguiendo un procedimiento similar al descrito para los derechos ARCO.\n\nAsimismo, si deseas dejar de recibir comunicaciones informativas, boletines o material promocional, podrás utilizar los mecanismos de cancelación incluidos en dichos mensajes o escribirnos para solicitar la inscripción a listas de exclusión internas.\n\nDebes considerar que, en algunos casos, la revocación o limitación del uso de tus datos puede implicar que no podamos seguir prestando ciertos servicios, en la medida en que la información sea necesaria para su ejecución."
+  },
+  {
+    heading: "DÉCIMA PRIMERA.- Menores de edad",
+    content: "Nuestros servicios están dirigidos principalmente a personas mayores de edad con capacidad legal para contratar. No recabamos deliberadamente datos personales de menores sin el consentimiento de su madre, padre o tutor.\n\nSi tenemos conocimiento de que hemos recabado datos de menores sin el consentimiento correspondiente, tomaremos las medidas razonables para eliminar dicha información de nuestros registros, salvo cuando debamos conservarla por obligación legal."
+  },
+  {
+    heading: "DÉCIMA SEGUNDA.- Cambios al presente Aviso de Privacidad",
+    content: "Podremos modificar este Aviso de Privacidad en cualquier momento, derivado de cambios normativos, internos, operativos o de los servicios que ofrecemos. La versión vigente será la que se encuentre publicada en el sitio en la fecha de última actualización.\n\nSi las modificaciones implican cambios sustanciales en las finalidades o en la manera en que tratamos tus datos, podremos notificarte por los medios de contacto que tengamos registrados, cuando ello sea razonablemente posible."
+  },
+  {
+    heading: "DÉCIMA TERCERA.- Aceptación del Aviso de Privacidad",
+    content: "Al proporcionarnos tus datos por cualquiera de las vías mencionadas, utilizar el sitio, solicitar información, cotizar o contratar nuestros servicios, reconoces que has leído este Aviso de Privacidad y que comprendes la forma en que trataremos tus datos personales, de conformidad con la legislación mexicana aplicable."
+  }
+];
+
+const enSections = [
+  {
+    heading: "Privacy Notice – ARNUG, S.A. DE C.V. (ROVIA)",
+    content: "Last update: June 23, 2026.\n\nBased on the Federal Law on Protection of Personal Data Held by Private Parties and its Regulations, we provide you with this Privacy Notice, through which we clearly explain how we collect, use, store, share, and protect your personal data when you use our website http://rovia.com.mx (hereinafter the 'Site'), contact us, request information, quote, contract, or use any of our services."
+  },
+  {
+    heading: "FIRST.- Identity and address of the responsible party",
+    content: "We are responsible for the processing of your personal data. Our corporate name is ARNUG, S.A. DE C.V., located at Avenida Coyoacán 1878, Piso 14 Dep. 1405 – A, Colonia Del Valle Benito Juárez, Mexico City, C.P. 03100 and contact email http://rovia.com.mx. Any questions related to the processing of your data may be channeled through said email or through the contact means published on the site."
+  },
+  {
+    heading: "SECOND.- Personal data we collect",
+    content: "The data we may collect, directly through the site, forms, email, messaging, calls, or any other means of contact, includes but is not limited to:\n\nIdentification data: full name, last name(s) if applicable, alias, or preferred form of address.\n\nContact data: email, phone number, city or state of residence, and, where applicable, other means of contact you provide to us.\n\nTravel-related data: destinations of interest, estimated or tentative dates, number of people traveling, age ranges, trip duration, type of experience sought (adventure, cultural, gastronomic, wellness, romantic, family, backpacking, etc.), general travel preferences, and approximate budget.\n\nInformation regarding contracted services: type of plan or experience, selected package, service modality (digital itinerary, personalized itinerary, strategic plan, travel planner, concierge, specific experience, among others), quotation history, and related communications.\n\nBilling data: RFC, corporate name, fiscal address, and data required to issue fiscal receipts, when you provide them for that purpose.\n\nPayment media data: to the extent necessary, we may collect a reference of the payment method used; when payment is processed by third-party gateways or platforms, sensitive card data will be handled directly on those platforms, according to their own policies.\n\nIn certain cases we might collect additional information related to dietary restrictions, special preferences, or logistical needs for trip planning purposes; however, we do not regularly request sensitive data (such as detailed health information, religion, political or ethnic orientation) and, should you voluntarily share them, we will treat them with special care and only for the purposes you indicate or that are evident."
+  },
+  {
+    heading: "THIRD.- Means through which we collect your data",
+    content: "We can obtain your personal data through the following ways:\n\nDirectly when you provide them by filling out forms on the site (for example, 'Quote your travel experience' or contact forms), by sending us an email, message, or by contacting us by phone.\n\nIndirectly when you contact us through messaging platforms, social networks, third-party forms, or links from other sites, always within the context of the services we offer.\n\nThrough the use of the site, by certain technologies that allow us to obtain technical or navigation data, as explained in the cookies and similar technologies section."
+  },
+  {
+    heading: "FOURTH.- Purposes of processing",
+    content: "We will use your personal data for the following primary purposes, necessary for the provision of our services and the relationship with you:\n\nAttend to and follow up on your requests for information, quotes, and messages.\n\nDesign, elaborate, and send you personalized proposals, itineraries, guides, recommendations, strategic plans, experiences, and services related to travel and tourism.\n\nManage the contracting of services, including the registration of your request, payment identification, delivery tracking, and attention to operational questions regarding the contracted services.\n\nMaintain communication with you before, during, and, if applicable, after the trip, for resolving doubts, confirmations, itinerary adjustments, and related logistical issues.\n\nIssue fiscal receipts (invoices) upon your request, provided you supply the necessary information.\n\nComply with legal, administrative, fiscal, or competent authority obligations.\n\nAdditionally, we may use your data for the following secondary purposes, which are not strictly necessary for the provision of the service, but allow us to improve and expand our offer:\n\nSend you informative communications, newsletters, destination recommendations, news about our services, or content related to travel experiences, provided you have authorized it or applicable legislation allows it.\n\nConduct satisfaction surveys, internal analyses, statistics, and studies on the quality and use of our services.\n\nDevelop general profiles of tourist and travel preferences, so that we can improve the personalization of future proposals, without this implying automated decisions that produce relevant legal effects for you.\n\nIf you do not want your data to be used for secondary purposes, you may express this from the beginning or at any later time, following the procedure described in the ARCO rights and revocation mechanisms section."
+  },
+  {
+    heading: "FIFTH.- Transfers of personal data",
+    content: "We may share your personal data with third parties only in the following scenarios and under the conditions established by applicable law:\n\nWith tourism service providers, such as tour operators, guides, hotels, wellness centers, host communities, transport companies, car rental agencies, and other suppliers, only when necessary to manage, coordinate, or confirm services related to the requested travel experience and always to the extent that you have authorized such management or it is evident from the nature of the service.\n\nWith technology service providers, payment processors, hosting services, email or messaging tools, and other platforms that support us in operating the site and delivering our services, who will process the information on our behalf and under our instructions.\n\nWith competent authorities when there is a duly founded legal or administrative requirement, or when necessary for the protection of our rights, attention to proceedings, audits, or compliance with legal obligations.\n\nExcept in the aforementioned cases or those where the law allows or requires it, we will not sell, rent, or transfer your personal data to third parties for purposes other than those indicated here. In cases where transfers requiring your consent are made, we will collect it previously and expressly."
+  },
+  {
+    heading: "SIXTH.- Cookies and similar technologies",
+    content: "Our site may use cookies, tags, or other similar technologies to:\n\nRemember certain browsing preferences.\n\nAnalyze site usage patterns in an aggregated and anonymous manner.\n\nImprove user experience and the performance of our pages.\n\nTo the extent that these technologies allow you to be identified directly or indirectly, they will be considered personal data and we will process them according to the provisions of this Notice. You can configure your browser to reject or delete cookies; however, doing so may affect some site functionalities."
+  },
+  {
+    heading: "SEVENTH.- Retention period",
+    content: "We will retain your personal data only for the time reasonably necessary to fulfill the described purposes, as long as an active relationship with you exists, during the periods established by applicable legislation in tax, commercial, consumer, or personal data protection matters, and for the additional time necessary to address pending responsibilities or obligations.\n\nWhen the data is no longer necessary for the indicated purposes and there is no legal obligation to keep it, we will proceed to its deletion, blocking, or anonymization, as appropriate."
+  },
+  {
+    heading: "EIGHTH.- Security measures",
+    content: "We implement reasonable administrative, technical, and physical security measures to protect your personal data against damage, loss, alteration, destruction, misuse, unauthorized access, or processing, considering the type of data and the associated risk.\n\nWhile no system is completely infallible, we are committed to continually reviewing and improving our security practices to minimize risks."
+  },
+  {
+    heading: "NINTH.- ARCO Rights (Access, Rectification, Cancellation, and Opposition)",
+    content: "You have the right to:\n\nAccess the personal data we have about you and know the details of its processing.\n\nRectify your data when it is inaccurate, incomplete, or outdated.\n\nCancel your data when you consider it is not required for any of the indicated purposes, has ceased to be necessary, or when you wish to revoke your consent (where applicable).\n\nOppose the processing of your data for specific purposes, particularly those that are not necessary for the legal relationship we maintain.\n\nTo exercise any of these rights, you may send a request to the email http://rovia.com.mx, indicating at least:\n\nYour full name and a means of contact (for example, email) to communicate the response.\n\nA copy of a document proving your identity (for example, an official ID).\n\nA clear description of the right you wish to exercise and the personal data regarding which you request access, rectification, cancellation, or opposition.\n\nIn case of rectification, the information to be updated or corrected.\n\nWe will respond within the periods established by applicable law, indicating the determinations adopted and, where appropriate, the reasons why it is not possible to address the request under the law."
+  },
+  {
+    heading: "TENTH.- Revocation of consent and limitation of use or disclosure",
+    content: "In cases where the processing of your data is based on your consent, you may revoke it at any time, without retroactive effects, by sending a request to the email http://rovia.com.mx, following a procedure similar to that described for ARCO rights.\n\nLikewise, if you wish to stop receiving informative communications, newsletters, or promotional material, you can use the cancellation mechanisms included in such messages or write to us to request enrollment in internal exclusion lists.\n\nYou should consider that, in some cases, revoking or limiting the use of your data may mean that we cannot continue providing certain services, to the extent that the information is necessary for their execution."
+  },
+  {
+    heading: "ELEVENTH.- Minors",
+    content: "Our services are primarily directed at adults with the legal capacity to contract. We do not deliberately collect personal data from minors without the consent of their mother, father, or guardian.\n\nIf we become aware that we have collected data from minors without the corresponding consent, we will take reasonable steps to delete such information from our records, except when we must retain it due to a legal obligation."
+  },
+  {
+    heading: "TWELFTH.- Changes to this Privacy Notice",
+    content: "We may modify this Privacy Notice at any time, as a result of regulatory, internal, operational changes, or changes to the services we offer. The current version will be the one published on the site on the date of the last update.\n\nIf the modifications involve substantial changes in the purposes or the way we process your data, we may notify you through the contact means we have registered, when reasonably possible."
+  },
+  {
+    heading: "THIRTEENTH.- Acceptance of the Privacy Notice",
+    content: "By providing us with your data through any of the mentioned means, using the site, requesting information, quoting, or contracting our services, you acknowledge that you have read this Privacy Notice and that you understand how we will process your personal data, in accordance with applicable Mexican law."
+  }
 ];
 
 export default function AvisoDePrivacidad() {
-  return <LegalPage title="Aviso de Privacidad" sections={sections} />;
+  const locale = useLocale();
+  const isEnglish = locale === 'en';
+  
+  const title = isEnglish ? "Privacy Notice" : "Aviso de Privacidad";
+  const sections = isEnglish ? enSections : esSections;
+
+  return <LegalPage title={title} sections={sections} />;
 }
