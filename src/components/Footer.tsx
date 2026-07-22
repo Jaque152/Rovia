@@ -61,7 +61,7 @@ export function Footer() {
             <h4 className="font-black mb-8 text-primary uppercase tracking-widest text-sm"><T>Atención al Cliente</T></h4>
             <ul className="space-y-5 text-base font-bold text-background/80">
               <li className="flex items-center gap-4"><Mail className="w-5 h-5 text-white/50" /> info@rovia.com.mx</li>
-              <li className="flex items-center gap-4"><Phone className="w-5 h-5 text-white/50" /> + 52 1 55 1708 4773</li>
+              <li className="flex items-center gap-4"><Phone className="w-5 h-5 text-white/50" /> +52 1 55 1708 4772</li>
               <li className="flex items-center gap-4"><MapPin className="w-5 h-5 text-white/50" /> AVENIDA COYOACAN 1878, PISO 14 DEP 1405 - A COLONIA DEL VALLE BENITO JUÁREZ C.P. 03100 CIUDAD DE MEXICO</li>
             </ul>
           </div>
