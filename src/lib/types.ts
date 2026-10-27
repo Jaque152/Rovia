@@ -15,11 +15,10 @@ export interface ContactMessage {
   created_at: string;
 }
 
-// NUEVO: Definimos la estructura flexible para la nueva BD sin romper la antigua
+
 export interface ImportantInfo {
   codigo?: string;
   requiere_destino?: boolean;
-  // Permite soportar el formato antiguo Record<string, string[]> si alguna experiencia aún lo tiene
   [key: string]: unknown; 
 }
 
@@ -34,7 +33,7 @@ export interface Experience {
   what_you_will_do?: string[];      
   itinerary?: string[]; 
   requirements?: string[]; 
-  important_info?: ImportantInfo; // <-- Modificado para aceptar la nueva estructura flexible
+  important_info?: ImportantInfo;
   included_general?: string[]; 
   category_id: number;
   categories?: Category; 
